@@ -3,27 +3,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-public class Conjunto extends TreeSet<Object>{
+import graph.Vertex;
+
+public class Conjunto<T> extends TreeSet<T>{
 	
 	//Primeiro elemento a ser adicionado
-	private String representative;
+	private T representative;
 	
-	public String getRepresentative() {
+	public T getRepresentative() {
 		return representative;
 	}
 	
-	public void setRepresentative(String representative) {
+	public void setRepresentative(T representative) {
 		this.representative = representative;
 	}
 	
 	@Override
-	public boolean add(Object obj) {
+	public boolean add(T obj) {
 		if(representative == null)
-			representative = obj.toString();
+			representative = obj;
 		
 		return super.add(obj);
 	}
-
+	
 	@Override
 	public String toString() {
 		return super.toString() + " --> Representative: " + getRepresentative();

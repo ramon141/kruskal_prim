@@ -49,12 +49,22 @@ public class Vertex implements Comparable<Vertex> {
 	}
 
 	public String toString() {
-		return name;
+		if(data == null) return "[name: " + name + "]";
+		return "[name: " + name + ", data: {" + data.toString() + "}]";
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Vertex)) return false;
+		
+		return ((Vertex) obj).name.equals(this.name); 
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public int compareTo(Vertex v) {
+		if(data == null) return this.name.compareTo(v.name);
+		
         return ((Comparable<Object>)data).compareTo(v.data);
 	}	
 }

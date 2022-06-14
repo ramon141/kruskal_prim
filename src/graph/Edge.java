@@ -104,9 +104,9 @@ public class Edge implements Comparable<Edge> {
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		b.append("(" + u);
+		b.append("(" + u.name);
 		b.append( isDirected() ? "->" : "--");
-		b.append(v);
+		b.append(v.name);
 		b.append(isWeighted() ? ", " + weight() : "" );
 		b.append(")");
 		return b.toString();
