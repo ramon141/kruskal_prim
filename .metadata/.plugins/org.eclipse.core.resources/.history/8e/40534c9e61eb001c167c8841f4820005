@@ -1,0 +1,28 @@
+package mintree;
+
+import utils.set.ConjuntoDisjunto;
+
+import graph.Edge;
+import graph.Graph;
+
+public class Kruskal {
+	
+	public static void exec(Graph graph) {
+		ConjuntoDisjunto cd = new ConjuntoDisjunto();
+		
+		for(Edge edge: graph.edges()) {
+			
+		}
+		
+		list.sort(null);
+		
+		
+			
+	}
+	
+	
+	
+	
+	
+
+}

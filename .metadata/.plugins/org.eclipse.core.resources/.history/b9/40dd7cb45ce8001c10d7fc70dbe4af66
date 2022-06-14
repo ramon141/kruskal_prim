@@ -1,0 +1,32 @@
+package utils;
+
+import java.util.TreeSet;
+
+
+public class Conjunto {
+
+	//Primeiro elemento a ser adicionado
+	private String representante;
+	private TreeSet value;
+	
+	public Conjunto(Object value) {
+		this.value = new TreeSet<Object>();
+	}
+	
+	//Cria um conjunto
+	public Conjunto makeSet(Object value) {
+		return new Conjunto(value);
+	}
+	
+	//Retorna o representante (Object) do conjunto onde se encontra o parâmetro dado
+	public Object findSet(Object value) {
+		
+		
+		return null;
+	}
+	
+	
+	
+	
+	
+}

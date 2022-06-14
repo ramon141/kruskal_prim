@@ -1,0 +1,15 @@
+package utils;
+
+public class Tree {
+	Object dad;
+	Object left;
+	Object right;
+	
+	
+	public void add(Object value) {
+		
+	}
+	
+	
+
+}

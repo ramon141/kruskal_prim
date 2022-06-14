@@ -1,0 +1,6 @@
+package utils.set;
+import java.util.TreeSet;
+
+public class Conjunto<T> extends TreeSet<Object>{
+
+}

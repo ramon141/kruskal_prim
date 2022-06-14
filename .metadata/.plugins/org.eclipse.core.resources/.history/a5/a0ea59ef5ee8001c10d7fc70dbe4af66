@@ -1,0 +1,5 @@
+package utils.set;
+
+public class Conjunto extends TreeSet<Object>{
+
+}

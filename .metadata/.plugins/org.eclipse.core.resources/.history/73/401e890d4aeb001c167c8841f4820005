@@ -1,0 +1,21 @@
+package mintree;
+
+import graph.Graph;
+
+public class Kruskal {
+	
+	public static void exec(Graph graph) {
+		
+		for(Edges edge: graph.edges()) {
+			
+		}
+		
+			
+	}
+	
+	
+	
+	
+	
+
+}

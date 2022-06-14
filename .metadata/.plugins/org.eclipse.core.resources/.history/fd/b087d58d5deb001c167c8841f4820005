@@ -1,0 +1,49 @@
+package utils.set;
+
+import java.util.ArrayList;
+
+public class ConjuntoDisjunto {
+	
+	//Coleção de conjuntos
+	private ArrayList<Conjunto> collection = new ArrayList<>();
+	
+	//Cria um conjunto neste conjunto disjunto
+	public void makeSet(Object value) {
+		//Cria o conjunto
+		Conjunto conjunto = new Conjunto();
+		conjunto.add(value);
+		
+		collection.add(conjunto);
+	}
+	
+	//Retorna o representante (Object) do conjunto onde se encontra o parâmetro dado
+	public String findSet(Object value) {
+		
+		//Percorre a coleção de conjunto para encontrar onde o valor se encontra
+		for(int i = 0; i < collection.size(); i++) {
+			Conjunto set = collection.get(i);
+			
+			if(set.contains(value)) //Pesquisa em árvore binária, complexidade O(log n)
+				return set.getRepresentative();
+		}
+		
+		return null;
+	}
+	
+	//O primeiro parâmetro (no caso o conjunto x) receberá a junção dos dois conjuntos
+	public void union(Conjunto x, Conjunto y) {
+		
+		//Adiciona todos os elementos do conjunto Y ao conjunto X
+		for(Object obj: y.getElements()) {
+			x.add(obj);
+		}
+		
+		//Remove o y da coleção
+		collection.remove(y);
+	}
+	
+	
+	
+	
+	
+}

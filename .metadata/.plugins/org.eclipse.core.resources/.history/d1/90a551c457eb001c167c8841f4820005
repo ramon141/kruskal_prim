@@ -1,0 +1,40 @@
+package utils;
+
+public class No<Edge> {
+
+	private Edge value;
+	private No<Edge> right;
+	private No<Edge> left;
+	
+	public No(Edge value) {
+		this.value = value;
+		this.right = null;
+		this.left = null;
+	}
+
+	public No<Edge> getRight() {
+		return right;
+	}
+
+	public void setRight(No<Edge> right) {
+		this.right = right;
+	}
+
+	public No<Edge> getLeft() {
+		return left;
+	}
+
+	public void setLeft(No<Edge> left) {
+		this.left = left;
+	}
+
+	public Edge getValue() {
+		return value;
+	}
+
+	public void setValue(Edge value) {
+		this.value = value;
+	}
+	
+	
+}

@@ -1,0 +1,29 @@
+package mintree;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import graph.Edge;
+import graph.Graph;
+
+public class Kruskal {
+	
+	public static void exec(Graph graph) {
+		List<Edge> list = new ArrayList<>();
+		
+		for(Edge edge: graph.edges()) {
+			list.add(edge);
+		}
+		
+		list.sort(null);
+		
+		
+			
+	}
+	
+	
+	
+	
+	
+
+}

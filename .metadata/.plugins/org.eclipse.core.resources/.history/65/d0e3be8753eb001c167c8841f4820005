@@ -1,0 +1,19 @@
+package utils;
+
+public class Tree {
+	Tree dad = null;
+	Tree left  = null;
+	Tree right = null;
+	
+	Object value;
+	
+	public 
+	
+	
+	public void add(Object value) {
+		while(this.left)
+	}
+	
+	
+
+}

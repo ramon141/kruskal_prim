@@ -1,0 +1,10 @@
+package graph;
+
+public class CanCompare implements Comparable<T> {
+
+	@Override
+	public int compareTo(T o) {
+		throw new RuntimeException("Implemente o método compareTo";)
+	}
+
+}

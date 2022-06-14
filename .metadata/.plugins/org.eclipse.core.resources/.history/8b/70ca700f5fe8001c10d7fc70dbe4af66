@@ -1,0 +1,45 @@
+package utils.set;
+
+import java.util.TreeSet;
+
+//Este irá ser o conjunto
+import java.util.ArrayList;
+
+
+public class ConjuntoDisjunto {
+	//Primeiro elemento a ser adicionado
+	private String representative;
+	
+	//Coleção de conjuntos
+	private ArrayList<TreeSet<Object>> collection = new ArrayList<>();
+	
+	//Cria um conjunto neste conjunto disjunto
+	public void makeSet(Object value) {
+		//Cria o conjunto
+		TreeSet<Object> conjunto = new TreeSet<Object>();
+		conjunto.add(value);
+		
+		collection.add(conjunto);
+	}
+	
+	//Retorna o representante (Object) do conjunto onde se encontra o parâmetro dado
+	public Object findSet(Object value) {
+		
+		//Percorre a coleção de conjunto para encontrar onde o valor se encontra
+		for(int i = 0; i < collection.size(); i++) {
+			TreeSet<Object> set = collection.get(i);
+			
+			if(set.contains(value))
+				return 
+			
+		}
+		
+		
+		return ;
+	}
+	
+	
+	
+	
+	
+}

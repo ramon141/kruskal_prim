@@ -1,0 +1,19 @@
+package utils;
+
+public class Tree<T> {
+	
+	private No<T> root;
+	
+	public Tree() {
+		raiz = null;
+	}
+	
+	public void add(T value) {
+		No<T> element = new No<>(value);
+		
+		if(root == null) {
+			this.root = element;
+		}
+	}
+
+}

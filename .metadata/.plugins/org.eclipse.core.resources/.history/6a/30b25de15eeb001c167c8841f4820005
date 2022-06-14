@@ -1,0 +1,32 @@
+package utils.set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
+
+public class Conjunto extends TreeSet<Object>{
+	
+	//Primeiro elemento a ser adicionado
+	private String representative;
+	
+	public Conjunto() {
+		elementos = new ArrayList<>();
+	}
+	
+	public String getRepresentative() {
+		return representative;
+	}
+	
+	public void setRepresentative(String representative) {
+		this.representative = representative;
+	}
+	
+	public List<Object> getElements() {
+		return elementos;
+	}
+
+	@Override
+	public String toString() {
+		return elementos.toString();
+	}
+	
+}

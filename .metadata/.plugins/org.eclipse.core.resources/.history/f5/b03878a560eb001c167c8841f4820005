@@ -1,0 +1,22 @@
+package test;
+
+import utils.set.*;
+
+public class ConjuntoDisjuntoTest {
+
+	public static void main(String[] args) {
+		ConjuntoDisjunto cd = new ConjuntoDisjunto();
+		
+		cd.makeSet("conjunto1");
+		cd.makeSet("conjunto2");
+		cd.makeSet("conjunto3");
+		cd.makeSet("conjunto4");
+		cd.makeSet("conjunto5");
+		cd.makeSet("conjunto6");
+		
+		
+		System.out.println(cd);
+		
+	}
+	
+}

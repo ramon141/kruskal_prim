@@ -1,0 +1,70 @@
+package utils;
+
+public class Tree {
+	private Tree dad = null;
+	private Tree left  = null;
+	private Tree right = null;
+	
+	private Object value;
+	
+	public Tree(Tree dad, Object value) {
+		if(dad == null)
+			setDad(this);
+		
+		setValue(value);
+	}
+	
+	public Tree getDad() {
+		return dad;
+	}
+
+	public void setDad(Tree dad) {
+		this.dad = dad;
+	}
+
+	public Tree getLeft() {
+		return left;
+	}
+
+	public void setLeft(Tree left) {
+		this.left = left;
+	}
+
+	public Tree getRight() {
+		return right;
+	}
+
+	public void setRight(Tree right) {
+		this.right = right;
+	}
+
+	public Object getValue() {
+		return value;
+	}
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
+
+
+
+	public void add(Object value) {
+		Tree tree = this;
+		
+		while(tree.left != null) {
+			tree = tree.left;
+		}
+		
+		//A raiz esta vazia?
+		if(tree.dad == tree && tree.getValue() == null)
+			tree = new Tree(tree, value);
+		
+		tree = new Tree(tree, value);
+		
+	}
+	
+	public 
+	
+	
+
+}
