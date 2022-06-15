@@ -12,6 +12,9 @@ import utils.Queue;
 public class Prim {
 
 	public static List<Edge> exec(Graph graph, Vertex vertexInit) {
+		if(!graph.isGraphConnected())
+			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
+		
 		List<Edge> caminhoMinimo = new ArrayList<>();
 		
 		for(Vertex vertex: graph.vertices()) {
@@ -36,7 +39,7 @@ public class Prim {
 			}
 		}
 		
-		//Percorrer os verices e obter seus pi
+		//Percorrer os vertices e obtem seus pi
 		for(Vertex v: graph.vertices()) {
 			Vertex vertexPredecessor = ((AttrVertex) v.getData()).pi;
 			if(vertexPredecessor != null)

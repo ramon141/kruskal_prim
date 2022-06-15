@@ -49,6 +49,7 @@ public abstract class Graph {
 	abstract public Vertex vertexAt(int i);
 	abstract public Edge addEdge(Edge edge);
 	abstract public boolean contaisEdge(Vertex u, Vertex v);
+	abstract public boolean isGraphConnected();
 			
 	//================================================================================
     // Iterable Abstract Methods

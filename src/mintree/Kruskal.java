@@ -22,6 +22,9 @@ public class Kruskal {
 	 * 
      */
 	public static List<Edge> exec(Graph graph) {
+		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
+			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
+		
 		ConjuntoDisjunto<Vertex> cd = new ConjuntoDisjunto<>();
 		
 		List<Edge> A = new ArrayList<>();//A = Ø 

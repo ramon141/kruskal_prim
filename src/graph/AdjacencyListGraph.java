@@ -2,7 +2,12 @@ package graph;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.OptionalInt;
 import java.util.Random;
 
 import graph.adjacencylist.AdjacencyList;
@@ -88,7 +93,47 @@ public class AdjacencyListGraph extends Graph {
 			if ( i == v )
 				return true;
 		return false;
-	}	
+	}
+	
+	private List<Vertex> vertexsProcessed = new ArrayList<>();
+	private boolean hasWay(Vertex v, Vertex u) {
+		vertexsProcessed.add(v);
+		if(v == u || contaisEdge(u, v)) {return true;}
+		if(vertexsProcessed.size() == this.numberOfVertices()) {return false;}
+		
+		//Faz uma busca em profundidade no vértice v, se encontrar o u então há caminho entre eles 
+		for(Vertex vertex: adj[index(v)].adjacentVertices()) {
+			if(!vertexsProcessed.contains(vertex))
+				return hasWay(vertex, u);
+		}
+		
+		return false;
+	}
+	
+	//Um grafo não dirigido é conexo se todo vértice pode ser alcançado de todos os outros vértices
+	@Override
+	public boolean isGraphConnected() {
+		if(this.isDirected())
+			throw new RuntimeException("Não é possível verficar se o grafo é conexo ou não");
+		
+		for(int i = 0; i < this.numberOfVertices(); i++) {
+			for(int j = i + 1; j < this.numberOfVertices(); j++) {
+				
+				//Utiliza a lista processada anteriormente como buffer
+				if(! (vertexsProcessed.contains(this.vertexAt(i)) && vertexsProcessed.contains(this.vertexAt(j)))) { //Se true Logo os vertices se alcançam
+					
+					//Limpa para proxima iteração
+					vertexsProcessed.clear();
+					
+					//Se algum vértice nao alcançar outro vértice, o grafo é automaticamente desconexo
+					if(!hasWay(this.vertexAt(i), this.vertexAt(j)))
+						return false;
+				}
+			}
+		}
+		
+		return true;
+	}
 
 	@Override
 	public String toString() {
@@ -114,7 +159,7 @@ public class AdjacencyListGraph extends Graph {
 		int maxEdges = (numberOfVertices*numberOfVertices-numberOfVertices)/2;
 		int minEdges = numberOfVertices - 1;
 		if (numberOfEdges > maxEdges)
-			throw new RuntimeException("A quantidade de arestas n�o pode ser maior que (V^2-V)/2");
+			throw new RuntimeException("A quantidade de arestas não pode ser maior que (V^2-V)/2");
 		if (numberOfEdges < minEdges)
 			throw new RuntimeException("A quantidade de arestas deve ser pelo menos V-1");
 		
@@ -166,10 +211,7 @@ public class AdjacencyListGraph extends Graph {
 	} 
 	
 	public static AdjacencyListGraph graphFromFile(String fileName, boolean directed) {
-		try {
-			if(directed)
-				throw new RuntimeException("O grafo informado deve ser não dirigido");
-				
+		try {				
 			BufferedReader file = new BufferedReader(new FileReader(fileName));
 			String line = file.readLine();
 			int numberOfVertices = Integer.parseInt(line); 
@@ -186,10 +228,8 @@ public class AdjacencyListGraph extends Graph {
 				Vertex v = vertices[Integer.parseInt(uv[1])];
 				if ( uv.length > 2 ) {
 					graph.addEdge( new Edge(u, v, Double.parseDouble(uv[2]), directed) );
-				} else {
-					throw new RuntimeException("O grafo inserido deve ser ponderado para isto por favor corrija a linha");
-					//graph.addEdge( new Edge(u, v, directed) );
-				}
+				} else
+					graph.addEdge( new Edge(u, v, directed) );
 			}
 			file.close();
 			return graph;
@@ -284,6 +324,8 @@ public class AdjacencyListGraph extends Graph {
 		}
 
 	}
+
+	
 
 	/*@Override
 	public void exportToDotFile( String fileName ) {
