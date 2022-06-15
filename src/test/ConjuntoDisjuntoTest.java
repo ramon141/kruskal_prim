@@ -11,7 +11,7 @@ public class ConjuntoDisjuntoTest {
 		//Tests realizados:
 		// - Não-Dirigido: Ok
 		// - Ponderado: Ok
-		// - Conexo: Falta mais testes
+		// - Conexo: Ok
 		
 		Graph g = AdjacencyListGraph.graphFromFile("input/cormen_23.1", false);
 		System.out.println(g);

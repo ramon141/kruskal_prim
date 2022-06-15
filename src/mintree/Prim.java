@@ -12,7 +12,7 @@ import utils.Queue;
 public class Prim {
 
 	public static List<Edge> exec(Graph graph, Vertex vertexInit) {
-		if(!graph.isGraphConnected())
+		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
 			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
 		
 		List<Edge> caminhoMinimo = new ArrayList<>();
