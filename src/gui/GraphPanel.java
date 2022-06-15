@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 public class GraphPanel extends JPanel{
 
 	
-	private final int INITIAL_COLUMN = 1;
+	private final int INITIAL_COLUMN = 3;
 	private final int WIDTH_VERTICES = 50;
 	private final int PADDING_VERTICES = 50;
 	
@@ -72,6 +72,13 @@ public class GraphPanel extends JPanel{
 			}
 			
 			int x = INITIAL_COLUMN;
+			
+			for(Vertex vetCount: graph.adjacentVertices(v))
+				if(!verticesProcessed.contains(vetCount))
+					x--;
+			
+			x = (int)(x / 2.0)  + 2;
+			
 			for(Vertex vAdj: graph.adjacentVertices(v)) {
 				if(drawVertex(g, vAdj, verticesProcessed, x, y)) {
 					verticesProcessed.add(vAdj);
@@ -95,7 +102,11 @@ public class GraphPanel extends JPanel{
 			Point pointStart  = onDrawVertices.get(edge.u());
 			Point pointFinish = onDrawVertices.get(edge.v());
 			
-			g.drawLine(pointStart.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2), pointStart.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2), pointFinish.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2), pointFinish.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2));
+			g.drawLine(pointStart.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
+					pointStart.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
+					
+					pointFinish.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
+					pointFinish.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2));
 		}
 		
 		
