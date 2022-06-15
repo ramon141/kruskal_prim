@@ -3,6 +3,7 @@ package test;
 import graph.AdjacencyListGraph;
 import graph.Graph;
 import mintree.Kruskal;
+import mintree.Prim;
 import utils.set.*;
 
 public class ConjuntoDisjuntoTest {
@@ -12,10 +13,7 @@ public class ConjuntoDisjuntoTest {
 		System.out.println(g);
 		
 		System.out.println(Kruskal.exec(g));
-		
-		
-		//System.out.println(cd);
-		
+		System.out.println(Prim.exec(g, g.vertexAt(0)));
 	}
 	
 }
