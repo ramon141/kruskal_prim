@@ -39,6 +39,8 @@ public class Prim {
 			}
 		}
 		
+		//Este trecho nao faz de fato parte do algoritmo, ele serve para manter um formato padrão
+		//das funções de árvores geradoras mínimas
 		//Percorrer os vertices e obtem seus pi
 		for(Vertex v: graph.vertices()) {
 			Vertex vertexPredecessor = ((AttrVertex) v.getData()).pi;

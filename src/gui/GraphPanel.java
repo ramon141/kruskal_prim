@@ -42,7 +42,7 @@ public class GraphPanel extends JPanel{
 	//Retornando false caso o vértice já se encontrava na telas
 	private boolean drawVertex(Graphics g, Vertex v, List<Vertex> verticesProcessed, int x, int y) {
 		if(!verticesProcessed.contains(v)) {
-			g.setColor(Color.BLACK);
+			g.setColor(Color.BLUE);
 			g.fillOval(x * (WIDTH_VERTICES + PADDING_VERTICES), y * (WIDTH_VERTICES + PADDING_VERTICES), WIDTH_VERTICES, WIDTH_VERTICES);
 			
 			g.setColor(Color.WHITE);
@@ -108,9 +108,6 @@ public class GraphPanel extends JPanel{
 					pointFinish.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
 					pointFinish.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2));
 		}
-		
-		
-		
 		
 	}
 	
