@@ -2,8 +2,6 @@ package utils.tree;
 
 public class Tree<T extends Comparable<T>> {
 
-	//Não permite elementos repetidos
-	private boolean distinctElements;
 	private Node<T> root;
 
 	public Node<T> getRoot() {
@@ -14,80 +12,102 @@ public class Tree<T extends Comparable<T>> {
 		this.root = root;
 	}
 
-	public boolean isDistinctElements() {
-		return distinctElements;
-	}
-
-	public void setDistinctElements(boolean distinctElements) {
-		this.distinctElements = distinctElements;
-	}
-
-	private void addOnLeft(Node<T> node, T value) {
-		if(node.getLeft() == null) {
-			Node<T> newElement = new Node<>(value);
-			node.setLeft(newElement);
-		
-		} else {
-			int cmpTo = value.compareTo(node.getLeft().value);
-			
-			if(cmpTo > 0)
-				addOnRight(node.getLeft(), value);
-			else
-				addOnLeft(node.getLeft(), value);
-			
-		}
-	}
-	
-	private void addOnRight(Node<T> node, T value) {
-		if(node.getRight() == null) {
-			Node<T> newElement = new Node<>(value);
-			node.setRight(newElement);
-		
-		} else {
-			int cmpTo = value.compareTo(node.getRight().value);
-			
-			if(cmpTo > 0)
-				addOnRight(node.getRight(), value);
-			else
-				addOnLeft(node.getRight(), value);
-			
-		}
-	}
-	
-	public void add(Tree tree, T value) {
-		if(tree.root == null) {
-			Node<T> newElement = new Node<>(value);
-			root = newElement;
-		
-		} else {
-			int cmpTo = value.compareTo((T) tree.root.value);
-			
-			if(cmpTo > 0) addOnRight(tree.root, value);
-			else  addOnLeft(tree.root, value);
-		}
-	}
-	
-	public void add(T value) {
-		add(this, value);
-	}
-	
-	
 	public String printNode(Node<T> node) {
 		if(node == null) return "";
 		
 		StringBuilder str = new StringBuilder();
 		
-		str.append(node + ", ");
+		//Imprime na ordem central, ou seja, na ordem crescente (do menor para o maior elemento)
 		str.append(printNode(node.getLeft()));
+		str.append(node + ", ");
 		str.append(printNode(node.getRight()));
 		
 		return str.toString();
+	}
+		
+	private Node<T> add(Node<T> root, T value){
+		if(root == null) {
+			root = new Node<>(value);
+		
+		} else {
+			int cmpTo = value.compareTo(root.value);
+			
+			if(cmpTo > 0) //Aloca a direita
+				root.setRight(add(root.getRight(), value));
+			else if(cmpTo < 0) //Aloca a esquerda
+				root.setLeft(add(root.getLeft(), value));			
+		}
+		
+		return root;
+	}
+	
+	public void add(T value){
+		this.root = add(this.root, value);
+	}
+	
+	public int size() {
+		return size(this.root);
+	}
+	
+	private int size(Node<T> node) {
+		if(node == null) return 0;
+		return size(node.getLeft()) + size(node.getRight()) + 1;
+	}
+		
+	private boolean contains(Node<T> node, T value) {
+		if(node == null) return false;
+		
+		int cmpTo = value.compareTo(node.getValue());
+		
+		//Se for igual     //Se o elemento estiver no lado direito           //Se o elemento estiver no lado esquerdo
+		if((cmpTo == 0) || (cmpTo > 0 && contains(node.getRight(), value)) || (cmpTo < 0 && contains(node.getLeft(), value)) )
+			return true;
+		
+		return false;
+	}
+	
+	public boolean contains(T value) {
+		return contains(this.root, value);
+	}
+	
+	private Node<T> remove(Node<T> node, T value) {
+		if(node == null) return null;
+		int cmpTo = value.compareTo(node.getValue());
+		
+		if(cmpTo == 0) {
+			//Se for no folha
+			if(node.getLeft() == null && node.getRight() == null) {
+				node = null;
+				return node;
+			
+			} else if(node.getLeft() == null ^ node.getRight() == null) {
+				if(node.getRight() != null) return node.getRight();
+				else return node.getLeft();
+				
+			}else {
+				
+			}
+			
+			
+			return node;
+		} else {
+			if(cmpTo > 0) //Remove a direita
+				node.setRight(remove(node.getRight(), value));
+			else //Remove a esquerda
+				node.setLeft(remove(node.getLeft(), value));
+			
+			return node;
+		}
+	}
+	
+	public void remove(T value) {
+		this.root = remove(this.root, value);
 	}
 	
 	@Override
 	public String toString() {
 		String str = printNode(this.root);
-		return "[" + str.substring(0, str.length() - 2) + "]";
+		return "[" + str.substring(0, str.length() == 0? 0 : str.length() - 2) + "]";
 	}
 	
 }
