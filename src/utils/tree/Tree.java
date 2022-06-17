@@ -1,5 +1,8 @@
 package utils.tree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Tree<T extends Comparable<T>> {
 
 	private Node<T> root;
@@ -145,10 +148,84 @@ public class Tree<T extends Comparable<T>> {
 		return maxValue;
 	}	
 	
+	
+	private List<T> treeInList = new ArrayList<T>();
+	private void toList(Node<T> node) {
+		if(node == null) return;
+		
+		toList(node.getLeft());
+		treeInList.add(node.getValue());
+
+		counterGet++;
+		toList(node.getRight());
+	}
+	
+	public List<T> toList() {
+		treeInList.clear();
+		toList(this.root);
+		return treeInList;
+	}
+	
+	private List<Node<T>> nodesInHeight(Node<T> node, List<Node<T>> nodes, int i, int height) {
+		if(node == null) return nodes;
+		
+		nodes = nodesInHeight(node.getLeft(), nodes, i+1, height);
+		if(i == height) nodes.add(node);
+		nodes = nodesInHeight(node.getRight(), nodes, i+1, height);
+			
+		return nodes;
+	}
+	
+	public List<Node<T>> nodesInHeight(int height){
+		return nodesInHeight(this.root, new ArrayList<Node<T>>(), 0, height);
+	}
+	
+	private int height(Node<T> node) {
+		if(node == null || node.getRight() == null || node.getLeft() == null)
+			return 1;
+		else {
+			int heightLeft  = 1 + height(node.getLeft());
+			int heightRight = 1 + height(node.getRight());
+			
+			return (heightLeft > heightRight)? heightLeft : heightRight;
+		}
+	}
+	
+	public int height() {
+		return height(this.root);
+	}
+		
+	private String drawChars(String str, int i) {
+		String ret = "";
+		for(int j = 0; j < i; j++) ret += str;
+		return ret;
+	}
+	
 	@Override
 	public String toString() {
-		String str = printNode(this.root);
-		return "[" + str.substring(0, str.length() == 0? 0 : str.length() - 2) + "]";
+		String str = "";
+		final int sizeTotal = size(), height = height();
+		List<Node<T>> list;
+		
+		for(int line = 0; ! (list = nodesInHeight(line)).isEmpty(); line++){
+			
+			int quantSpacesBefore = (int) Math.pow(2, sizeTotal / height - line);
+			int spaceBetween = quantSpacesBefore * 2 - 1;
+
+			str += drawChars(" ", quantSpacesBefore);
+			
+			for(Node<T> node: list) {
+				str += node + drawChars(" ", spaceBetween);
+				
+			}
+
+			str += "\n";
+		}
+		
+		return str;
+		
+//		String str = printNode(this.root);
+//		return "[" + str.substring(0, str.length() == 0? 0 : str.length() - 2) + "]";
 	}
 	
 }

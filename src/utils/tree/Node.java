@@ -56,7 +56,16 @@ public class Node<T> {
 	
 	@Override
 	public String toString() {
-		return getValue().toString();
+//		String value = getValue().toString();
+//		String ret = "/";
+//		for(int i = 0; i < value.length(); i++) ret += "-";
+//		ret += "\\\n";
+//		ret += "|" + value + "|\n";
+//		ret += "\\";
+//		for(int i = 0; i < value.length(); i++) ret += "-";
+//		ret += "/";
+		
+		return value.toString();
 	}
 	
 }

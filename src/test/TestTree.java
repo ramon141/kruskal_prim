@@ -1,21 +1,37 @@
 package test;
 
+import graph.Vertex;
 import utils.tree.Tree;
 
 public class TestTree {
 
 	
 	public static void main(String[] args) {
-		Tree<Integer> tree = new Tree<Integer>();
+		Tree<Vertex> tree = new Tree<Vertex>();
 		
-
-		tree.add(4);
-		tree.add(2);
-		tree.add(1);
-		tree.add(3);
-		tree.add(6);
-		tree.add(5);
-		tree.add(7);
+		
+//		for(int i = 0; i < 10; i++)
+//			tree.add(i);
+//			tree.add(1);
+//			tree.add(2);
+//			tree.add(3);
+		
+		tree.add(new Vertex("a", 4));
+		tree.add(new Vertex("b", 2));
+		tree.add(new Vertex("c", 1));
+		tree.add(new Vertex("d", 3));
+		
+		
+		
+//		tree.add(4);
+//		tree.add(2);
+//		tree.add(1);
+//		tree.add(3);
+//		tree.add(6);
+//		tree.add(5);
+//		tree.add(7);
+		
+		System.out.println(tree);
 				
 //		System.out.println(tree.remove(1));
 //		System.out.println(tree.size());
@@ -26,11 +42,7 @@ public class TestTree {
 //		tree.remove(6);
 //		tree.remove(7);
 				
-		System.out.println(tree.extractMax());
-		System.out.println(tree.extractMax());
-		System.out.println(tree.extractMax());
-		System.out.println(tree.extractMax());
-		System.out.println(tree);
+		
 		
 //		System.out.println(tree.contains(1));
 //		System.out.println(tree.contains(2));
