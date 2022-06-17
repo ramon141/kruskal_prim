@@ -13,6 +13,14 @@ public class Node<T> {
 		setValue(value);
 		this.left = null;
 		this.right = null;
+		this.dad = null;
+	}
+	
+	public Node(T value, Node<T> dad) {
+		setValue(value);
+		setDad(dad);
+		this.left = null;
+		this.right = null;
 	}
 	
 	public T getValue() {

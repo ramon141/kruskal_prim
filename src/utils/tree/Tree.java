@@ -25,24 +25,24 @@ public class Tree<T extends Comparable<T>> {
 		return str.toString();
 	}
 		
-	private Node<T> add(Node<T> root, T value){
+	private Node<T> add(Node<T> root, T value, Node<T> dad){
 		if(root == null) {
-			root = new Node<>(value);
+			root = new Node<>(value, dad);
 		
 		} else {
 			int cmpTo = value.compareTo(root.value);
 			
 			if(cmpTo > 0) //Aloca a direita
-				root.setRight(add(root.getRight(), value));
+				root.setRight(add(root.getRight(), value, root));
 			else if(cmpTo < 0) //Aloca a esquerda
-				root.setLeft(add(root.getLeft(), value));			
+				root.setLeft(add(root.getLeft(), value, root));			
 		}
 		
 		return root;
 	}
 	
 	public void add(T value){
-		this.root = add(this.root, value);
+		this.root = add(this.root, value, null);
 	}
 	
 	public int size() {
@@ -85,11 +85,17 @@ public class Tree<T extends Comparable<T>> {
 				else return node.getLeft();
 				
 			}else {
+				Node<T> aux = node.getLeft();
 				
+				while(aux.getRight() != null)
+					aux = aux.getRight();
+				
+				node.setValue(aux.getValue());
+				aux.setValue(value);
+				node.setLeft(remove(node.getLeft(), value));
+				
+				return node;
 			}
-			
-			
-			return node;
 		} else {
 			if(cmpTo > 0) //Remove a direita
 				node.setRight(remove(node.getRight(), value));
@@ -99,10 +105,45 @@ public class Tree<T extends Comparable<T>> {
 			return node;
 		}
 	}
-	
-	public void remove(T value) {
+		
+	public boolean remove(T value) {
+		//Verifica se de fato removeu o elemento
+		int sizeBeforeRemove = size();
 		this.root = remove(this.root, value);
+		return size() != sizeBeforeRemove;
 	}
+	
+	private int counterGet = 0;
+	private T elementGet;
+	public void get(Node<T> node, int key) {
+		if(node == null) return;
+		
+		get(node.getLeft(), key);
+		if(key == counterGet)
+			elementGet = node.getValue();
+
+		counterGet++;
+		get(node.getRight(), key);
+	}
+	
+	public T get(int key) {
+		counterGet = 0;
+		elementGet = null;
+		get(this.root, key);
+		return elementGet;
+	}
+
+	public T extractMin() {
+		T minValue = get(0);
+		remove(minValue);
+		return minValue;
+	}
+	
+	public T extractMax() {
+		T maxValue = get(size() - 1);
+		remove(maxValue);
+		return maxValue;
+	}	
 	
 	@Override
 	public String toString() {
