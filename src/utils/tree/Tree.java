@@ -275,10 +275,14 @@ public class Tree<T extends Comparable<T>> {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		
-		Object[][] m = matrixMapping( get(0).toString().length() );
+		int quantSpaces = root.getValue().toString().length();
+		Object[][] m = matrixMapping();
+		String spacing = "";
+		while(quantSpaces-- > 0) spacing += " ";
+		
 		for(int i = 0; i < m.length; i++) {
 			for(int j = 0; j < m[i].length; j++) {
-				if(m[i][j] == null) str.append(" ");
+				if(m[i][j] == null) str.append(spacing);
 				else str.append((m[i][j]).toString());
 			}
 			str.append("\n");
