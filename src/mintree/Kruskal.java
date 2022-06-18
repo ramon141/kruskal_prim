@@ -1,6 +1,8 @@
 package mintree;
 
+import utils.Triggers;
 import utils.set.ConjuntoDisjunto;
+import utils.tree.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,27 +27,31 @@ public class Kruskal {
 		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
 			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
 		
+		Triggers trigger = new Triggers();
 		ConjuntoDisjunto<Vertex> cd = new ConjuntoDisjunto<>();
 		
 		List<Edge> A = new ArrayList<>();//A = Ø 
 		
-		for(Vertex vertex: graph.vertices()) //for each vertex v ∈ G.V
+		for(Vertex vertex: graph.vertices()) { //for each vertex v ∈ G.V
 			cd.makeSet(vertex); //MAKE-SET(v)
+			trigger.onChange(cd, "conjunto disjunto");
+		}
 		
 		//sort the edges of G.E into nondecreasing order by weight w
-		List<Edge> edges = new ArrayList<Edge>();
-		graph.edges().forEach(edges::add);
-		edges.sort(null);
+		Tree<Edge> edges = new Tree<>(graph.edges());
 
-		for (Edge edge: edges) { //for each edge(u, v) ∈ G.E
+		for (Edge edge: edges.toList()) { //for each edge(u, v) ∈ G.E
 			
 			//FIND-SET(u) != FIND-SET(v)
 			if(! cd.findSet(edge.u()).getRepresentative().equals(cd.findSet(edge.v()).getRepresentative())) {
+				trigger.onChange(edge, "encontrou uma ligacao");
 				A.add(edge); //A = A U {(u,v)}
 				cd.union(edge.u(), edge.v()); //UNION(u,v)
-			}
+			
+			} else trigger.onChange(edge, "nao encontrou uma ligacao");
 		}
 		
+		trigger.onChange(A, "terminou");
 		return A;//return A
 	}
 	

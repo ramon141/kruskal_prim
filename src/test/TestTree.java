@@ -7,19 +7,24 @@ public class TestTree {
 
 	
 	public static void main(String[] args) {
-		Tree<Vertex> tree = new Tree<Vertex>();
+		Tree<String> tree = new Tree<String>();
 		
 		
-//		for(int i = 0; i < 10; i++)
-//			tree.add(i);
+		for(int i = 0; i < 10; i++)
+			tree.add( ((char)(i+65))+"" );
 //			tree.add(1);
 //			tree.add(2);
 //			tree.add(3);
 		
-		tree.add(new Vertex("a", 4));
-		tree.add(new Vertex("b", 2));
-		tree.add(new Vertex("c", 1));
-		tree.add(new Vertex("d", 3));
+//		System.out.println(tree.toList());
+//		System.out.println(tree.height());
+		System.out.println(tree);
+		
+		
+//		tree.add(new Vertex("a", 4));
+//		tree.add(new Vertex("b", 2));
+//		tree.add(new Vertex("c", 1));
+//		tree.add(new Vertex("d", 3));
 		
 		
 		
@@ -31,7 +36,13 @@ public class TestTree {
 //		tree.add(5);
 //		tree.add(7);
 		
-		System.out.println(tree);
+//		System.out.println(tree.get(0));
+		
+//		System.out.println(tree.width(tree.getRoot(), 1));
+		
+		
+		
+		
 				
 //		System.out.println(tree.remove(1));
 //		System.out.println(tree.size());

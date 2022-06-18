@@ -7,6 +7,15 @@ public class Tree<T extends Comparable<T>> {
 
 	private Node<T> root;
 
+	public Tree() {
+		this.root = null;
+	}
+	
+	public Tree(Iterable<T> iterable) {
+		for(T ele: iterable)
+			add(ele);
+	}
+	
 	public Node<T> getRoot() {
 		return root;
 	}
@@ -147,7 +156,21 @@ public class Tree<T extends Comparable<T>> {
 		remove(maxValue);
 		return maxValue;
 	}	
+		
+	private List<Node<T>> treeInListWithNode = new ArrayList<>();
+	private void toListNode(Node<T> node) {
+		if(node == null) return;
+		
+		toListNode(node.getLeft());
+		treeInListWithNode.add(node);
+		toListNode(node.getRight());
+	}
 	
+	public List<Node<T>> toListNode() {
+		treeInListWithNode.clear();
+		toListNode(this.root);
+		return treeInListWithNode;
+	}
 	
 	private List<T> treeInList = new ArrayList<T>();
 	private void toList(Node<T> node) {
@@ -155,8 +178,6 @@ public class Tree<T extends Comparable<T>> {
 		
 		toList(node.getLeft());
 		treeInList.add(node.getValue());
-
-		counterGet++;
 		toList(node.getRight());
 	}
 	
@@ -180,9 +201,9 @@ public class Tree<T extends Comparable<T>> {
 		return nodesInHeight(this.root, new ArrayList<Node<T>>(), 0, height);
 	}
 	
-	private int height(Node<T> node) {
-		if(node == null || node.getRight() == null || node.getLeft() == null)
-			return 1;
+	public int height(Node<T> node) {
+		if(node == null)
+			return 0;
 		else {
 			int heightLeft  = 1 + height(node.getLeft());
 			int heightRight = 1 + height(node.getRight());
@@ -190,39 +211,76 @@ public class Tree<T extends Comparable<T>> {
 			return (heightLeft > heightRight)? heightLeft : heightRight;
 		}
 	}
-	
+
 	public int height() {
 		return height(this.root);
 	}
+	
+	private Integer width(Node<T> node, T value) {		
+		int x = 0;
+		Node<T> auxRoot = node;
+		int minValue = size() + 1;
 		
-	private String drawChars(String str, int i) {
-		String ret = "";
-		for(int j = 0; j < i; j++) ret += str;
-		return ret;
+		
+		while(auxRoot != null) {
+			int cmpTo = auxRoot.getValue().compareTo(value);
+			
+			if(cmpTo < 0) {
+				auxRoot = auxRoot.getRight();
+				x += size(auxRoot) + 1;
+			} else if (cmpTo > 0) {
+				auxRoot = auxRoot.getLeft();
+				x -= (size(auxRoot) +1);
+				if(minValue > x)
+					minValue = x;
+			} else return x; 
+		}
+		
+		return null;
+	}
+	
+	public Integer width(T value) {
+		return width(this.root, value);
+	}
+	
+	public Object[][] matrixMapping() {
+		List<Node<T>> list = toListNode();
+		
+		int minValue = Math.abs(width(this.root, this.get(0)));
+		int maxValue = Math.abs(width(this.root, this.get(size() - 1)));
+		int valueToSum = minValue > maxValue? minValue : maxValue;
+		int sizeTotal = height();
+		
+		Object[][] matrix = new Object[height()][valueToSum * 2 + 1];
+		
+		for(Node<T> ele: list) {
+			int x = sizeTotal - height(ele);
+			int y = width(this.root, ele.getValue()) + valueToSum;
+			
+			matrix[x][y] = ele;
+		}
+		
+		return matrix;
+	}
+				
+	public boolean isEmpty() {
+		return this.root == null;
 	}
 	
 	@Override
 	public String toString() {
-		String str = "";
-		final int sizeTotal = size(), height = height();
-		List<Node<T>> list;
+		StringBuilder str = new StringBuilder();
 		
-		for(int line = 0; ! (list = nodesInHeight(line)).isEmpty(); line++){
-			
-			int quantSpacesBefore = (int) Math.pow(2, sizeTotal / height - line);
-			int spaceBetween = quantSpacesBefore * 2 - 1;
-
-			str += drawChars(" ", quantSpacesBefore);
-			
-			for(Node<T> node: list) {
-				str += node + drawChars(" ", spaceBetween);
-				
+		Object[][] m = matrixMapping();
+		for(int i = 0; i < m.length; i++) {
+			for(int j = 0; j < m[i].length; j++) {
+				if(m[i][j] == null) str.append(" ");
+				else str.append((m[i][j]).toString());
 			}
-
-			str += "\n";
+			str.append("\n");
 		}
 		
-		return str;
+		return str.toString();
 		
 //		String str = printNode(this.root);
 //		return "[" + str.substring(0, str.length() == 0? 0 : str.length() - 2) + "]";
