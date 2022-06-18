@@ -216,7 +216,7 @@ public class Tree<T extends Comparable<T>> {
 		return height(this.root);
 	}
 	
-	private Integer width(Node<T> node, T value) {		
+	private Integer width(Node<T> node, T value, int padding) {		
 		int x = 0;
 		Node<T> auxRoot = node;
 		int minValue = size() + 1;
@@ -227,10 +227,10 @@ public class Tree<T extends Comparable<T>> {
 			
 			if(cmpTo < 0) {
 				auxRoot = auxRoot.getRight();
-				x += size(auxRoot) + 1;
+				x += size(auxRoot) + padding;
 			} else if (cmpTo > 0) {
 				auxRoot = auxRoot.getLeft();
-				x -= (size(auxRoot) +1);
+				x -= (size(auxRoot) + padding);
 				if(minValue > x)
 					minValue = x;
 			} else return x; 
@@ -240,14 +240,14 @@ public class Tree<T extends Comparable<T>> {
 	}
 	
 	public Integer width(T value) {
-		return width(this.root, value);
+		return width(this.root, value, 1);
 	}
-	
-	public Object[][] matrixMapping() {
+		
+	public Object[][] matrixMapping(int padding) {
 		List<Node<T>> list = toListNode();
 		
-		int minValue = Math.abs(width(this.root, this.get(0)));
-		int maxValue = Math.abs(width(this.root, this.get(size() - 1)));
+		int minValue = Math.abs(width(this.root, this.get(0), padding));
+		int maxValue = Math.abs(width(this.root, this.get(size() - 1), padding));
 		int valueToSum = minValue > maxValue? minValue : maxValue;
 		int sizeTotal = height();
 		
@@ -255,12 +255,16 @@ public class Tree<T extends Comparable<T>> {
 		
 		for(Node<T> ele: list) {
 			int x = sizeTotal - height(ele);
-			int y = width(this.root, ele.getValue()) + valueToSum;
+			int y = width(this.root, ele.getValue(), padding) + valueToSum;
 			
 			matrix[x][y] = ele;
 		}
 		
 		return matrix;
+	}
+	
+	public Object[][] matrixMapping() {
+		return matrixMapping(1);
 	}
 				
 	public boolean isEmpty() {
@@ -271,7 +275,7 @@ public class Tree<T extends Comparable<T>> {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		
-		Object[][] m = matrixMapping();
+		Object[][] m = matrixMapping( get(0).toString().length() );
 		for(int i = 0; i < m.length; i++) {
 			for(int j = 0; j < m[i].length; j++) {
 				if(m[i][j] == null) str.append(" ");

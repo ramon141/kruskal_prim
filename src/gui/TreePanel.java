@@ -26,7 +26,6 @@ public class TreePanel extends JPanel{
 	}
 	
 	private void drawNode(Graphics g, Node<Vertex> node, int y, int x) {
-//		System.out.println("(" + x + ", " + y + ")");
 		g.setColor(Color.BLUE);
 		g.fillOval(x * (WIDTH_NODE + PADDING_NODE), y * (WIDTH_NODE + PADDING_NODE), WIDTH_NODE, WIDTH_NODE);
 		g.setColor(Color.WHITE);
@@ -39,7 +38,6 @@ public class TreePanel extends JPanel{
 		for(int i = 0; i < matrixVertices.length; i++) {
 			for(int j = 0; j < matrixVertices[i].length; j++) {
 				if(matrixVertices[i][j] != null) {
-					System.out.println(matrixVertices[i][j] + " - (" +i+","+j+")" );
 					Node<Vertex> node = (Node<Vertex>) matrixVertices[i][j];
 					onDrawVertices.put(node, new Point(j, i));
 					drawNode(g, node, i, j);
