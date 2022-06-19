@@ -1,27 +1,22 @@
 package gui;
 
+import java.awt.GridLayout;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class Controls extends JPanel{
 
-	JButton nextStep = new JButton();
-	JButton prevStep = new JButton();
+	JButton nextStep = new JButton("Próximo passo");
 	
 	public Controls() {
-		setLayout(null);
-		configuringSizeButtons();
+		setLayout(new GridLayout(1,3));
 		addButtons();
 	}
-	
-	public void configuringSizeButtons() {
-		nextStep.setBounds(0, 0, 100, 100);
-		prevStep.setBounds(0, 100, 100, 100);
-	}
-	
+		
 	public void addButtons() {
 		add(nextStep);
-		add(prevStep);
 	}
 	
 }

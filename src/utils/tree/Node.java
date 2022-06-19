@@ -7,20 +7,22 @@ public class Node<T> {
 	//Parentes do nó
 	Node<T> right;
 	Node<T> left;
-	Node<T> dad;
 	
+	private int height;
+
 	public Node(T value) {
 		setValue(value);
 		this.left = null;
 		this.right = null;
-		this.dad = null;
+		this.setHeight(0);
 	}
 	
-	public Node(T value, Node<T> dad) {
-		setValue(value);
-		setDad(dad);
-		this.left = null;
-		this.right = null;
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
 	}
 	
 	public T getValue() {
@@ -44,14 +46,6 @@ public class Node<T> {
 
 	public void setLeft(Node<T> left) {
 		this.left = left;
-	}
-
-	public Node<T> getDad() {
-		return dad;
-	}
-
-	public void setDad(Node<T> dad) {
-		this.dad = dad;
 	}
 	
 	@Override

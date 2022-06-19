@@ -1,6 +1,5 @@
 package test;
 
-import graph.Vertex;
 import utils.tree.Tree;
 
 public class TestTree {

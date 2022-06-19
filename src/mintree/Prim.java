@@ -7,7 +7,6 @@ import graph.Edge;
 import graph.Graph;
 import graph.Vertex;
 import utils.AttrVertex;
-import utils.Queue;
 import utils.Triggers;
 import utils.tree.Tree;
 

@@ -1,10 +1,8 @@
 package utils.set;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeSet;
 
-import graph.Vertex;
 
+@SuppressWarnings("serial")
 public class Conjunto<T> extends TreeSet<T>{
 	
 	//Primeiro elemento a ser adicionado

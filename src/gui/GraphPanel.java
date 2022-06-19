@@ -5,6 +5,7 @@ import graph.Graph;
 import graph.Vertex;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -15,18 +16,17 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class GraphPanel extends JPanel{
 
-	
 	private final int INITIAL_COLUMN = 3;
 	private final int WIDTH_VERTICES = 50;
 	private final int PADDING_VERTICES = 50;
-	
-	
+		
 	private Graph graph;
 	
 	public GraphPanel(Graph graph) {
-		this.graph = graph;
+		setGraph(graph);
 	}
 		
 	public Graph getGraph() {
@@ -36,6 +36,7 @@ public class GraphPanel extends JPanel{
 	public void setGraph(Graph graph) {
 		this.graph = graph;
 		repaint();
+		setPreferredSize(  new Dimension( ( graph.numberOfVertices() ) * (WIDTH_VERTICES + PADDING_VERTICES), graph.numberOfVertices() * (WIDTH_VERTICES + PADDING_VERTICES))  );
 	}
 	
 	//Retorna um booleano para indicar se o vértice foi adicionado na panel, retornando true para este caso.
