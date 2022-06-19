@@ -51,7 +51,7 @@ public class Tree<T extends Comparable<T>> {
 			if(cmpTo > 0) //Aloca a direita
 				root.setRight(add(root.getRight(), value));
 			else if(cmpTo < 0) //Aloca a esquerda
-				root.setLeft(add(root.getLeft(), value));			
+				root.setLeft(add(root.getLeft(), value));
 		}
 		
 		root.setHeight( bigger( height(root.getLeft()),
@@ -156,21 +156,22 @@ public class Tree<T extends Comparable<T>> {
 		return contains(this.root, value);
 	}
 	
-	private Node<T> remove(Node<T> node, T value) {
+	private Node<T> remove(Node<T> node, T value) {		
 		if(node == null) return null;
 		int cmpTo = value.compareTo(node.getValue());
+		
+		treeInList.clear();
+		toList(node);
+//		System.out.println("Comparando " + value + " com " + node.getValue() + " | Res: " + cmpTo + " na lista " + treeInList );
+		treeInList.clear();
 		
 		if(cmpTo == 0) {
 			//Se for no folha
 			if(node.getLeft() == null && node.getRight() == null) {
 				node = null;
-				return node;
+				return null;
 			
-			} else if(node.getLeft() == null ^ node.getRight() == null) {
-				if(node.getRight() != null) return balance(node.getRight());
-				else return balance(node.getLeft());
-				
-			}else {
+			} else if(node.getLeft() != null && node.getRight() != null) {
 				Node<T> aux = node.getLeft();
 				
 				while(aux.getRight() != null)
@@ -180,16 +181,33 @@ public class Tree<T extends Comparable<T>> {
 				aux.setValue(value);
 				node.setLeft(remove(node.getLeft(), value));
 				
-				return balance(node);
+				return node;
+				
+			}else {
+				Node<T> aux;
+				
+				if(node.getLeft() != null)
+					aux = node.getLeft();
+				else
+					aux = node.getRight();
+				
+				node = null;
+				return aux;
 			}
 		} else {
 			if(cmpTo > 0) //Remove a direita
 				node.setRight(remove(node.getRight(), value));
 			else //Remove a esquerda
 				node.setLeft(remove(node.getLeft(), value));
-			
-			return balance(node);
 		}
+		
+		node.setHeight( bigger( height(node.getLeft()),
+				                height(node.getRight()) )
+					    + 1 );
+		
+		node = balance(node);
+		
+		return node;
 	}
 		
 	public boolean remove(T value) {
@@ -221,8 +239,20 @@ public class Tree<T extends Comparable<T>> {
 
 	public T extractMin() {
 		T minValue = get(0);
-		remove(minValue);
+		remove(minValue);		
 		return minValue;
+	}
+	
+	//É utilizado caso, o método compareTo da classe T seja alterado
+	public void forceSort() {
+		List<T> elements = this.toList();
+		
+		// """""limpa"""" a árvore binária
+		this.root = null;
+		
+		for(T ele : elements) {
+			this.add(ele);
+		}
 	}
 	
 	public T extractMax() {
@@ -260,21 +290,7 @@ public class Tree<T extends Comparable<T>> {
 		toList(this.root);
 		return treeInList;
 	}
-	
-//	private List<Node<T>> nodesInHeight(Node<T> node, List<Node<T>> nodes, int i, int height) {
-//		if(node == null) return nodes;
-//		
-//		nodes = nodesInHeight(node.getLeft(), nodes, i+1, height);
-//		if(i == height) nodes.add(node);
-//		nodes = nodesInHeight(node.getRight(), nodes, i+1, height);
-//			
-//		return nodes;
-//	}
-//	
-//	public List<Node<T>> nodesInHeight(int height){
-//		return nodesInHeight(this.root, new ArrayList<Node<T>>(), 0, height);
-//	}
-	
+
 	public int height(Node<T> node) {
 		if(node == null) return -1;
 		return node.getHeight();
@@ -294,7 +310,7 @@ public class Tree<T extends Comparable<T>> {
 	}
 	
 	private Integer width(Node<T> node, T value, int padding) {
-		//if(node == null) return 0;
+		if(node == null) return 0;
 		int x = 0;
 		Node<T> auxRoot = node;
 		int minValue = size() + 1;
@@ -314,7 +330,8 @@ public class Tree<T extends Comparable<T>> {
 			} else return x; 
 		}
 		
-		return null;
+		System.out.println("width: " + node);
+		return x;
 	}
 	
 	public Integer width(T value) {
@@ -326,10 +343,9 @@ public class Tree<T extends Comparable<T>> {
 		
 		int minValue = Math.abs(width(this.root, this.get(0), padding));
 		int maxValue = Math.abs(width(this.root, this.get(size() - 1), padding));
+		
 		int valueToSum = minValue > maxValue? minValue : maxValue;
 		int height = height();
-		
-		System.out.println(height);
 		
 		Object[][] matrix = new Object[height + 1][valueToSum * 2 + 1];
 		
@@ -358,6 +374,8 @@ public class Tree<T extends Comparable<T>> {
 	
 	@Override
 	public String toString() {
+		if(root == null) return "";
+		
 		StringBuilder str = new StringBuilder();
 		
 		int quantSpaces = root.getValue().toString().length();

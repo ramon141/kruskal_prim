@@ -48,6 +48,10 @@ public class ConjuntoDisjunto<T> {
 	public ArrayList<Conjunto<T>> getCollection() {
 		return collection;
 	}
+	
+	public int size() {
+		return this.getCollection().size();
+	}
 
 	@Override
 	public String toString() {		

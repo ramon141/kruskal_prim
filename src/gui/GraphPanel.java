@@ -19,6 +19,8 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class GraphPanel extends JPanel{
 
+	Graphics g;
+	private Map<Vertex, Point> onDrawVertices = new HashMap<>();
 	private final int INITIAL_COLUMN = 3;
 	private final int WIDTH_VERTICES = 50;
 	private final int PADDING_VERTICES = 50;
@@ -43,7 +45,7 @@ public class GraphPanel extends JPanel{
 	//Retornando false caso o vértice já se encontrava na telas
 	private boolean drawVertex(Graphics g, Vertex v, List<Vertex> verticesProcessed, int x, int y) {
 		if(!verticesProcessed.contains(v)) {
-			g.setColor(Color.BLUE);
+			g.setColor( new Color(228,131,18) );
 			g.fillOval(x * (WIDTH_VERTICES + PADDING_VERTICES), y * (WIDTH_VERTICES + PADDING_VERTICES), WIDTH_VERTICES, WIDTH_VERTICES);
 			
 			g.setColor(Color.WHITE);
@@ -59,7 +61,6 @@ public class GraphPanel extends JPanel{
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 30));
 		
 		List<Vertex> verticesProcessed = new ArrayList<>();
-		Map<Vertex, Point> onDrawVertices = new HashMap<>();
 		
 		for(int i = 0, y = 0; i < graph.numberOfVertices(); i++) {
 			boolean draw = false;
@@ -95,9 +96,9 @@ public class GraphPanel extends JPanel{
 		return onDrawVertices;		
 	}
 	
-	private void drawEdges(Graphics g, Map<Vertex, Point> onDrawVertices, Iterable<Edge> edges) {
+	private void drawEdges(Graphics g, Map<Vertex, Point> onDrawVertices, Iterable<Edge> edges, Color lineColor) {
 		
-		g.setColor(Color.BLACK);
+		g.setColor(lineColor);
 		
 		for(Edge edge: edges) {
 			Point pointStart  = onDrawVertices.get(edge.u());
@@ -112,11 +113,26 @@ public class GraphPanel extends JPanel{
 		
 	}
 	
+	public void highlightLine(Edge edge) {
+		g.setColor(Color.RED);
+		
+		Point pointStart  = onDrawVertices.get(edge.u());
+		Point pointFinish = onDrawVertices.get(edge.v());
+		
+		g.drawLine(pointStart.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
+					pointStart.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
+					
+					pointFinish.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
+					pointFinish.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2));
+	}
+	
 	
 	@Override
 	public void paint(Graphics g) {
-		Map<Vertex, Point> onDrawVertices = drawVertexs(g, graph.vertices());
-		drawEdges(g, onDrawVertices, graph.edges());
+		onDrawVertices.clear();
+		drawVertexs(g, graph.vertices());
+		drawEdges(g, onDrawVertices, graph.edges(), Color.BLACK);
+		this.g = g;
 	}
 	
 }

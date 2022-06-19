@@ -44,12 +44,12 @@ public class Vertex implements Comparable<Vertex> {
 		if (i < 0)
 			throw new RuntimeException("O �ndice deve ser maior ou igual a zero!");
 		if ( isIndexed() )
-			throw new RuntimeException("Este v�rtice j� est� indexado, ele deve ser usado sempre neste �ndice para evitar problemas de indexa��o quando usado em v�rios grafos!");
+			throw new RuntimeException("Este vértice já está indexado, ele deve ser usado sempre neste �ndice para evitar problemas de indexa��o quando usado em v�rios grafos!");
 		index = i;
 	}
 
 	public String toString() {
-		if(data == null) return "[name: " + name + "]";
+		if(data == null) return name.toString().toUpperCase();
 		return "[name: " + name + ", data: {" + data.toString() + "}]";
 	}
 

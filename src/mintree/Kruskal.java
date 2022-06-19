@@ -13,6 +13,9 @@ import graph.Vertex;
 
 public class Kruskal {
 	
+	public static List<Edge> exec(Graph graph) {
+		return exec(graph, new Triggers(false));
+	}
 	
 	/**
 	 * @param graph Uma instância de um grafo que já possui vértices e arestas definidas.
@@ -23,19 +26,19 @@ public class Kruskal {
 	 * Ao lado de cada trecho de código estará o seu correspondente do livro de Cormem (Figura 23.4)
 	 * 
      */
-	public static List<Edge> exec(Graph graph) {
+	public static List<Edge> exec(Graph graph, Triggers trigger) {
 		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
 			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
 		
-		Triggers trigger = new Triggers();
 		ConjuntoDisjunto<Vertex> cd = new ConjuntoDisjunto<>();
 		
 		List<Edge> A = new ArrayList<>();//A = Ø 
 		
 		for(Vertex vertex: graph.vertices()) { //for each vertex v ∈ G.V
 			cd.makeSet(vertex); //MAKE-SET(v)
-			trigger.onChange(cd, "conjunto disjunto");
+			trigger.onChange(cd, "conjunto disjunto etapa");
 		}
+//		trigger.onChange(cd, "conjunto disjunto feito");
 		
 		//sort the edges of G.E into nondecreasing order by weight w
 		Tree<Edge> edges = new Tree<>(graph.edges());
@@ -44,9 +47,9 @@ public class Kruskal {
 			
 			//FIND-SET(u) != FIND-SET(v)
 			if(! cd.findSet(edge.u()).getRepresentative().equals(cd.findSet(edge.v()).getRepresentative())) {
-				trigger.onChange(edge, "encontrou uma ligacao");
 				A.add(edge); //A = A U {(u,v)}
 				cd.union(edge.u(), edge.v()); //UNION(u,v)
+				trigger.onChange(edge, "encontrou uma ligacao");
 			
 			} else trigger.onChange(edge, "nao encontrou uma ligacao");
 		}

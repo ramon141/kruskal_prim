@@ -26,7 +26,8 @@ public class Conjunto<T> extends TreeSet<T>{
 	
 	@Override
 	public String toString() {
-		return super.toString() + " --> Representative: " + getRepresentative();
+		return super.toString().replace("[", "{").replace("]", "}");
+//		return super.toString() + " --> Representative: " + getRepresentative();
 	}
 	
 }

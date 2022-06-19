@@ -63,7 +63,7 @@ public class TreePanel extends JPanel{
 	}
 	
 	private void drawNode(Graphics g, Node<Vertex> node, int y, int x) {
-		g.setColor(Color.BLUE);
+		g.setColor( new Color(228,131,18) );
 		g.fillOval(x * (WIDTH_NODE + PADDING_NODE), y * (WIDTH_NODE + PADDING_NODE), WIDTH_NODE, WIDTH_NODE);
 		
 		g.setColor(Color.WHITE);

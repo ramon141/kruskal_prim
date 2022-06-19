@@ -1,6 +1,6 @@
 package utils;
 
-import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 //Esta classe tem o objetivo agir como gatilhos que ocorrerão a cada passo dos algoritmos de
 //kruskal e prim
@@ -13,25 +13,37 @@ import java.util.Scanner;
 
 public class Triggers {
 
-	public boolean waitThread = false;
 	private boolean go = false;
+	
+	public Triggers(boolean waitThread) {
+	}
 	
 	/**
 	 * @param obj Novo valor da estrutura que foi modificada
 	 * @param name Nome da estrutura modificada, será utilizada para identificação
 	 * */
 	public void onChange(Object obj,  String name) {
-		System.out.println(obj + " - " + name);
-		if(waitThread) waitThread();
 	}
 	
+	
+	public boolean isGo() {
+		return go;
+	}
+
+	public void setGo(boolean go) {
+		this.go = go;
+		if(!go) waitThread();
+	}
+
 	//Força que a operação pare
 	private void waitThread() {
-		while(!go());
-	}
-	
-	private boolean go() {
-		return true;
+		while(!go) {
+			try {
+				Thread.sleep(100);
+			}catch(Exception err) {
+				err.printStackTrace();
+			}
+		}
 	}
 	
 }

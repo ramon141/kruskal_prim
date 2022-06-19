@@ -6,18 +6,17 @@ public class TestTree {
 
 	
 	public static void main(String[] args) {
-		Tree<String> tree = new Tree<String>();
+		Tree<Integer> tree = new Tree<>();
 		
 		
-		for(int i = 0; i < 10; i++)
-			tree.add( ((char)(i+65))+"" );
+//		for(int i = 0; i < 10; i++)
+//			tree.add( ((char)(i+65))+"" );
 //			tree.add(1);
 //			tree.add(2);
 //			tree.add(3);
 		
 //		System.out.println(tree.toList());
 //		System.out.println(tree.height());
-		System.out.println(tree);
 		
 		
 //		tree.add(new Vertex("a", 4));
@@ -27,15 +26,17 @@ public class TestTree {
 		
 		
 		
-//		tree.add(4);
-//		tree.add(2);
-//		tree.add(1);
-//		tree.add(3);
-//		tree.add(6);
-//		tree.add(5);
-//		tree.add(7);
+		tree.add(4);
+		tree.add(2);
+		tree.add(1);
+		tree.add(3);
+		tree.add(6);
+		tree.add(5);
+		tree.add(7);
 		
-//		System.out.println(tree.get(0));
+		tree.remove(7);
+		
+		System.out.println(tree.toList());
 		
 //		System.out.println(tree.width(tree.getRoot(), 1));
 		

@@ -26,7 +26,7 @@ public class AttrVertex implements Comparable<AttrVertex>{
 	
 	@Override
 	public String toString() {
-		return "π: " + pi + ", key: " + key;
+		return "π: " + (pi == null? "null" : pi.getName()) + ", key: " + key;
 	}
 	
 }

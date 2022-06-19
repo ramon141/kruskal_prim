@@ -8,15 +8,19 @@ import graph.Graph;
 import graph.Vertex;
 import utils.AttrVertex;
 import utils.Triggers;
-import utils.tree.Tree;
+import utils.Queue;
 
 public class Prim {
 
 	public static List<Edge> exec(Graph graph, Vertex vertexInit) {
+		return Prim.exec(graph, vertexInit, new Triggers(false));
+	}
+	
+	public static List<Edge> exec(Graph graph, Vertex vertexInit, Triggers trigger) {
 		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
 			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
 		
-		Triggers trigger = new Triggers();
+
 		List<Edge> caminhoMinimo = new ArrayList<>();
 		
 		for(Vertex vertex: graph.vertices()) {
@@ -27,11 +31,10 @@ public class Prim {
 		
 		trigger.onChange(graph, "iniciando");
 		
-		Tree<Vertex> Q = new Tree<Vertex>(graph.vertices());
+		Queue<Vertex> Q = new Queue<Vertex>(graph.vertices());
 
 		while(!Q.isEmpty()) {
 			Vertex u = Q.extractMin();
-			trigger.onChange(u, "extraiu");
 			
 			for(Edge edge: graph.edgesIncidentFrom(u)) {
 				Vertex v = edge.v();
