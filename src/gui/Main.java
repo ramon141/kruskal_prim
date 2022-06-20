@@ -1,7 +1,5 @@
 package gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -22,9 +20,6 @@ import utils.tree.Tree;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame{
-	static boolean inStep = false;
-	String algorithmOnExec = "kruskal";
-	
 	Triggers trigger;
 	
 	DisjointSetTablePanel disjointSetPanel;
@@ -41,56 +36,107 @@ public class Main extends JFrame{
 	TreePanel treePanel = new TreePanel(treeVertices);
 	JScrollPane scrTreePanel = new JScrollPane( treePanel );
 	
+	Thread threadKruskal;
+	
 	private double sizeHeightScrolls = 1.3; 
 		
-	public Main() {
-		trigger = new Triggers(true) {
+	public Main() {		
+		//Configura/Substitui os métodos para servir para os propositos desta classe 
+		configControls();
+				
+		//Depois de tudo configurado ela atribui informações do JFrame
+		configFrame();
+		
+		//Atualiza o tamanho e posição dos componentes
+		updateSizeComponents();
+		
+		//Impede que o java implemente formas de otimizar a visualização de scroll panels
+		//A otimização "requer" que a cada scroll seja feita um repaint no componente, e por padrão
+		//isto não ocorre, devido a isso o ideal é renderizar todo o panel e mostrar só parte dele,
+		//do que mostrar somente a parte do panel que estará visível. O SIMPLE_SCROLL_MODE gasta mais
+		//memória RAM, porém menos processador, já que não requer que um repaint seja feita a cada scroll
+		//Vale ressaltar que nem sempre um repaint é necessário, logo ele pode gastar o mesmo nível de
+		//processamento que SIMPLE_SCROLL_MODE, e utilizar menos RAM.
+		scrTreePanel.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+		scrGraphPanel.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+		
+		//Adiciona os componentes no local onde foram previamente configurados
+		//Alguns componentes só sao adicionados em certas ocasiões
+		add(scrGraphPanel);
+		add(scrTreePanel);
+		add(controls);
+		
+		//Implementa um trigger, que fica aguardando a janela mudar de tamanho para alterar o tamanho
+		//dos componentes
+		onResizeWindow();
+	}
+		
+	private void stopKruskal() {
+		if(this.threadKruskal !=  null && this.threadKruskal.isAlive()) {
+			this.trigger.finishProcess();
+			
+			//Espera que o processo termine
+			try {
+				Thread.sleep(200);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void startKruskal() {
+		this.trigger = createTrigger( "kruskal" );
+		
+		//Uma thread depois de finalizada nao pode ser novamente iniciada, logo é necessario criar outra
+		this.threadKruskal = createThread( "kruskal", this.trigger );
+		this.threadKruskal.start();
+	}
+	
+	private Thread createThread(String algorithm, Triggers trigger) {
+		return new Thread() {
 			@Override
-			public void onChange(Object obj,  String name) {
-				callback(obj, name);
-				trigger.setGo(false);
+			public void run() {
+				if(algorithm.equals("kruskal"))
+					Kruskal.exec(graph, trigger);
+				else if(algorithm.equals("kruskal"))
+					return;
 			}
 		};
-		
+	}
+
+	private void configControls() {
 		controls = new Controls() {
 			@Override
 			public void onLoadGraph(Graph newGraph) {
 				setGraph(newGraph);
 			}
-		};
 			
-		Thread threadKruskal = new Thread() {
 			@Override
-			public void run() {
-				Kruskal.exec(graph, trigger);
+			public void onNextStep() {
+				trigger.setGo(true);
+			}
+			
+			@Override
+			public void onRunKruskal() {
+				startKruskal();
+			}
+			
+			@Override
+			public void onStopKruskal() {
+				stopKruskal();
 			}
 		};
-		
-		threadKruskal.start();
-		
-		configFrame();
-		
-		controls.nextStep.addActionListener(new ActionListener() {
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	        	trigger.setGo(true);
-	        }
-	    });
-		
-		
-		updateSizeComponents();
-		
-		scrTreePanel.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
-		scrGraphPanel.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
-		
-		add(scrGraphPanel);
-		add(scrTreePanel);
-		add(controls);
-		
-		onResizeWindow();
 	}
-	
-	
+
+	private Triggers createTrigger(String algorithm) {		
+		return new Triggers(algorithm) {
+			@Override
+			public void callback(Triggers trigger, String name, Object... obj) {
+				onStep(trigger, name, obj);
+				setGo(false);
+			}
+		};
+	}
 	
 	public Graph getGraph() {
 		return graph;
@@ -103,32 +149,40 @@ public class Main extends JFrame{
 
 	//Um trigger com uma mensagem específica é enviada a cada etapa do algoritmo (seja de Kruskal ou Prim)
 	//Para definir as etapas que o trigger deve ser chamado é necessário adicionar no Kruskal.exec ou Prim.exec
-	public void callback(Object obj,  String name) {
+	public void onStep(Triggers trigger, String name, Object... obj) {
 		//Se for Kruskal
-		if(algorithmOnExec.equals("kruskal"))
-			kruskalTriggers(obj, name);
-		else if(algorithmOnExec.equals("prim"))
+		if(trigger.getName().equals("kruskal"))
+			kruskalTriggers(name, obj);
+		else if(trigger.equals("prim"))
 			return;		
 	}
 	
-	public void kruskalTriggers(Object obj,  String name) {		
+	public void kruskalTriggers(String name, Object... obj) {		
 		if(name.equals("conjunto disjunto etapa")) {
 			if(scrDisjointSetPanel == null) {
 				//Inicia as estruturas
-				disjointSetPanel = new DisjointSetTablePanel( (ConjuntoDisjunto<Vertex>) obj );
+				disjointSetPanel = new DisjointSetTablePanel( (ConjuntoDisjunto<Vertex>) obj[0] );
 				scrDisjointSetPanel = new JScrollPane( disjointSetPanel );
 				add(scrDisjointSetPanel);
 			
 			} else {
-				disjointSetPanel.setCd( (ConjuntoDisjunto<Vertex>) obj );
+				disjointSetPanel.setCd( (ConjuntoDisjunto<Vertex>) obj[0] );
 			}
 			
 		} else if(name.equals("nao ligados")) {
-			disjointSetPanel.getRow().setEdgeProcess( (Edge) obj );
-			graphPanel.highlightLine( (Edge) obj );
+			disjointSetPanel.getRow().setEdgeProcess( (Edge) obj[0] );
+			graphPanel.highlightLine( (Edge) obj[0] );
 		
 		} else if(name.equals("ja haviam ligados")) {
-			JOptionPane.showMessageDialog(null, "Vale relembrar que os vértices da aresta\nprocessada já estãono mesmo conjunto.\nE por consequência a aresta não será ressaltada.");
+//			JOptionPane.showMessageDialog(null, "Vale relembrar que os vértices da aresta\nprocessada já estãono mesmo conjunto.\nE por consequência a aresta não será ressaltada.");
+		
+		} else if(name.equals("restart process")) {
+			remove(scrDisjointSetPanel);
+			disjointSetPanel = null;
+			scrDisjointSetPanel = null;
+			repaint();
+			JOptionPane.showMessageDialog(null, "O processo foi finalizado");
+			
 		}
 
 		updateSizeComponents();

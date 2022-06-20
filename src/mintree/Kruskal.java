@@ -2,7 +2,6 @@ package mintree;
 
 import utils.Triggers;
 import utils.set.ConjuntoDisjunto;
-import utils.tree.Tree;
 import utils.Queue;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import graph.Vertex;
 public class Kruskal {
 	
 	public static List<Edge> exec(Graph graph) {
-		return exec(graph, new Triggers(false));
+		return exec(graph, new Triggers("kruskal"));
 	}
 	
 	/**
@@ -37,7 +36,7 @@ public class Kruskal {
 		
 		for(Vertex vertex: graph.vertices()) { //for each vertex v ∈ G.V
 			cd.makeSet(vertex); //MAKE-SET(v)
-			trigger.onChange(cd, "conjunto disjunto etapa");
+			trigger.onChange("conjunto disjunto etapa", cd);
 		}
 //		trigger.onChange(cd, "conjunto disjunto feito");
 		
@@ -50,12 +49,12 @@ public class Kruskal {
 			if(! cd.findSet(edge.u()).getRepresentative().equals(cd.findSet(edge.v()).getRepresentative())) {
 				A.add(edge); //A = A U {(u,v)}
 				cd.union(edge.u(), edge.v()); //UNION(u,v)
-				trigger.onChange(edge, "nao ligados");
+				trigger.onChange("nao ligados", edge);
 			
-			} else trigger.onChange(edge, "ja haviam ligados");
+			} else trigger.onChange("ja haviam ligados", edge);
 		}
 		
-		trigger.onChange(A, "terminou");
+		trigger.onChange("terminou", A);
 		return A;//return A
 	}
 	

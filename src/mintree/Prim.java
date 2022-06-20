@@ -13,7 +13,7 @@ import utils.Queue;
 public class Prim {
 
 	public static List<Edge> exec(Graph graph, Vertex vertexInit) {
-		return Prim.exec(graph, vertexInit, new Triggers(false));
+		return Prim.exec(graph, vertexInit, new Triggers("prim"));
 	}
 	
 	public static List<Edge> exec(Graph graph, Vertex vertexInit, Triggers trigger) {
@@ -29,7 +29,7 @@ public class Prim {
 		
 		((AttrVertex) vertexInit.getData()).key = 0;
 		
-		trigger.onChange(graph, "iniciando");
+		trigger.onChange("iniciando", graph);
 		
 		Queue<Vertex> Q = new Queue<Vertex>(graph.vertices());
 
@@ -42,7 +42,7 @@ public class Prim {
 				if(Q.contains(v) && edge.weight() < ((AttrVertex) v.getData()).key) {
 					((AttrVertex) v.getData()).pi = u;
 					((AttrVertex) v.getData()).key = edge.weight();
-					trigger.onChange(u, "mudou caminho");
+					trigger.onChange("mudou caminho", u);
 					
 				}
 			}

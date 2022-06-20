@@ -7,6 +7,16 @@ public class ConjuntoDisjunto<T> {
 	//Coleção de conjuntos
 	private ArrayList<Conjunto<T>> collection = new ArrayList<>();
 	
+	
+	@Override
+	public ConjuntoDisjunto<T> clone(){
+		ArrayList<Conjunto<T>> copyCollection = new ArrayList<>( collection );
+		ConjuntoDisjunto<T> copy = new ConjuntoDisjunto<>();
+		copy.setCollection(copyCollection);
+		
+		return copy;
+	}
+	
 	//Cria um conjunto neste conjunto disjunto
 	public void makeSet(T value) {
 		//Cria o conjunto
@@ -47,6 +57,10 @@ public class ConjuntoDisjunto<T> {
 	
 	public ArrayList<Conjunto<T>> getCollection() {
 		return collection;
+	}
+	
+	public void setCollection(ArrayList<Conjunto<T>> collection) {
+		this.collection = collection;
 	}
 	
 	public int size() {
