@@ -24,6 +24,8 @@ public class Controls extends JPanel{
 		setLayout(new GridLayout(4, 1));
 		addButtons();
 		
+		runKruskal.setEnabled(false);
+		runPrim.setEnabled(false);
 		nextStep.setEnabled(false);
 		
 		addActionOnClickLoadGraph();
@@ -39,12 +41,28 @@ public class Controls extends JPanel{
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
 	        	//Abre o seletor de arquivos
-	        	JFileChooser chooser = new JFileChooser();
+	        	JFileChooser chooser = new JFileChooser("./");
 	        	
 	        	int returnVal = chooser.showOpenDialog(null);
 	            if(returnVal == JFileChooser.APPROVE_OPTION) {	            	
 	            	Graph graph = AdjacencyListGraph.graphFromFile(chooser.getSelectedFile().getPath(), false);
-	            	onLoadGraph(graph);
+	            	
+	            	if(graph.isDirected())
+	            		JOptionPane.showMessageDialog(null, "O grafo selecionado deve ser dirigido");
+	            	else if(!graph.isGraphConnected())
+	            		JOptionPane.showMessageDialog(null, "O grafo selecionado deve ser conexo");
+	            	else if(!graph.isWeighted())
+	            		JOptionPane.showMessageDialog(null, "O grafo selecionado deve ser ponderado");
+	            	else {
+	            		runKruskal.setEnabled(true);
+	            		runKruskal.setText("Executar Kruskal");
+	            		
+	            		runPrim.setEnabled(true);
+	            		runPrim.setText("Executar Prim");
+	            		
+	            		onLoadGraph(graph);
+	            	}
+	            	
 	            } else {
 	            	JOptionPane.showMessageDialog(null, "Por favor selecione um arquivo.");
 	            }
@@ -105,10 +123,12 @@ public class Controls extends JPanel{
 	
 	public void onRunPrim() {}
 	
+	public void onStopPrim() {}
+	
 	public void onRunKruskal() {}
 	
 	public void onStopKruskal() {}
-
+	
 	public void addButtons() {
 		add(runKruskal);
 		add(runPrim);

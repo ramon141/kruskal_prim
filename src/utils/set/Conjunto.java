@@ -8,18 +8,6 @@ public class Conjunto<T> extends TreeSet<T>{
 	//Primeiro elemento a ser adicionado
 	private T representative;
 	
-	@Override
-	public Conjunto<T> clone(){
-		
-		Conjunto<T> copy = new Conjunto<>();
-		
-		for(T value: this) {
-			copy.add(value);
-		}
-		
-		return copy;
-	}
-	
 	public T getRepresentative() {
 		return representative;
 	}

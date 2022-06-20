@@ -22,10 +22,12 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class GraphPanel extends JPanel{
 
-	Graphics g;
-	
+	private List<Vertex> verticesProcessed = new ArrayList<>();
 	private List<Edge> edgeProcessed = new ArrayList<>();
+	
 	private Map<Vertex, Point> onDrawVertices = new HashMap<>();
+	
+	private final String REGEX_TO_SEPARE = ", ";
 	private final int INITIAL_COLUMN = 3;
 	private final int WIDTH_VERTICES = 50;
 	private final int PADDING_VERTICES = 50;
@@ -49,10 +51,15 @@ public class GraphPanel extends JPanel{
 	
 	//Retorna um booleano para indicar se o vértice foi adicionado na panel, retornando true para este caso.
 	//Retornando false caso o vértice já se encontrava na telas
-	private boolean drawVertex(Graphics g, Vertex v, List<Vertex> verticesProcessed, int x, int y) {
-		if(!verticesProcessed.contains(v)) {
-				
-			g.setColor( new Color(228,131,18) );
+	private boolean drawVertex(Graphics g, Vertex v, List<Vertex> verticesAlreadyShown, int x, int y) {
+		if(!verticesAlreadyShown.contains(v)) {
+			
+			if(verticesProcessed.contains(v)) {
+				g.setColor( Color.black );
+			} else {
+				g.setColor( new Color(228,131,18) );
+			}
+			
 			g.fillOval(x * (WIDTH_VERTICES + PADDING_VERTICES), y * (WIDTH_VERTICES + PADDING_VERTICES), WIDTH_VERTICES, WIDTH_VERTICES);
 			
 			g.setColor(Color.WHITE);
@@ -64,17 +71,17 @@ public class GraphPanel extends JPanel{
 		return false;
 	}
 
-	private Map<Vertex, Point> drawVertexs(Graphics g, Iterable<Vertex> vertices) {
+	private Map<Vertex, Point> drawVertices(Graphics g, Iterable<Vertex> vertices) {
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 30));
 		
-		List<Vertex> verticesProcessed = new ArrayList<>();
+		List<Vertex> verticesAlreadyShown = new ArrayList<>();
 		
-		for(int i = 0, y = 0; i < graph.numberOfVertices(); i++) {
+		for(int i = 0, y = 1; i < graph.numberOfVertices(); i++) {
 			boolean draw = false;
 			Vertex v = graph.vertexAt(i);
 			
-			if(drawVertex(g, v, verticesProcessed, INITIAL_COLUMN, y)) {
-				verticesProcessed.add(v);
+			if(drawVertex(g, v, verticesAlreadyShown, INITIAL_COLUMN, y)) {
+				verticesAlreadyShown.add(v);
 				onDrawVertices.put(v, new Point(INITIAL_COLUMN, y));
 				draw = true;
 				y++;
@@ -83,14 +90,14 @@ public class GraphPanel extends JPanel{
 			int x = INITIAL_COLUMN;
 			
 			for(Vertex vetCount: graph.adjacentVertices(v))
-				if(!verticesProcessed.contains(vetCount))
+				if(!verticesAlreadyShown.contains(vetCount))
 					x--;
 			
 			x = (int)(x / 2.0)  + 2;
 			
 			for(Vertex vAdj: graph.adjacentVertices(v)) {
-				if(drawVertex(g, vAdj, verticesProcessed, x, y)) {
-					verticesProcessed.add(vAdj);
+				if(drawVertex(g, vAdj, verticesAlreadyShown, x, y)) {
+					verticesAlreadyShown.add(vAdj);
 					onDrawVertices.put(vAdj, new Point(x, y));
 					draw = true;
 					x++;
@@ -147,13 +154,38 @@ public class GraphPanel extends JPanel{
 		repaint();
 	}
 	
+	public void highlightVertex(Vertex vertex) {
+		verticesProcessed.add(vertex);
+		repaint();
+	}
+	
+	public void drawDataVertices(Graphics g, Map<Vertex, Point> onDrawVertices) {
+		g.setFont(new Font("TimesRoman", Font.BOLD, 13));
+		
+		for(Vertex vertex: graph.vertices()) {
+			if(vertex.getData() != null) {
+				Point point = onDrawVertices.get(vertex);
+				
+				int x = point.x * (WIDTH_VERTICES + PADDING_VERTICES);
+				int y = point.y * (WIDTH_VERTICES + PADDING_VERTICES) - (int)(WIDTH_VERTICES / 2.0);
+				
+				String elements[] = vertex.getData().toString().split(REGEX_TO_SEPARE);
+				for(String ele: elements) {
+					g.drawString(ele.replace("Infinity", "\u221E").replace("null", "\u2205"), x, y);
+					y += 15;
+				}
+				
+			}
+		}
+		
+	}
 	
 	@Override
 	public void paint(Graphics g) {
 		onDrawVertices.clear();
-		drawVertexs(g, graph.vertices());
+		drawVertices(g, graph.vertices());
 		drawEdges(g, onDrawVertices, graph.edges(), Color.BLACK);
-		this.g = g;
+		drawDataVertices(g, onDrawVertices);
 	}
 	
 }

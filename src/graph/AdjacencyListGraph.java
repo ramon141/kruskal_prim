@@ -113,6 +113,9 @@ public class AdjacencyListGraph extends Graph {
 		if(this.isDirected())
 			throw new RuntimeException("Não é possível verficar se o grafo é conexo ou não");
 		
+		//Pode haver "sujeiras" de uma execução anterior
+		vertexsProcessed.clear();
+		
 		for(int i = 0; i < this.numberOfVertices(); i++) {
 			for(int j = i + 1; j < this.numberOfVertices(); j++) {
 				
@@ -208,7 +211,7 @@ public class AdjacencyListGraph extends Graph {
 	} 
 	
 	public static AdjacencyListGraph graphFromFile(String fileName, boolean directed) {
-		try {				
+		try {
 			BufferedReader file = new BufferedReader(new FileReader(fileName));
 			String line = file.readLine();
 			int numberOfVertices = Integer.parseInt(line); 

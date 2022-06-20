@@ -42,10 +42,12 @@ public class Prim {
 				if(Q.contains(v) && edge.weight() < ((AttrVertex) v.getData()).key) {
 					((AttrVertex) v.getData()).pi = u;
 					((AttrVertex) v.getData()).key = edge.weight();
-					trigger.onChange("mudou caminho", u);
+//					trigger.onChange("mudou caminho", u);
 					
 				}
 			}
+			
+			trigger.onChange("vertice processada", u);
 		}
 		
 		//Este trecho nao faz de fato parte do algoritmo, ele serve para manter um formato padrão

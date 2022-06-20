@@ -14,6 +14,7 @@ import graph.Vertex;
 import graph.Edge;
 import gui.table.DisjointSetTablePanel;
 import mintree.Kruskal;
+import mintree.Prim;
 import utils.Triggers;
 import utils.set.ConjuntoDisjunto;
 import utils.tree.Tree;
@@ -27,7 +28,7 @@ public class Main extends JFrame{
 	
 	Controls controls;
 	
-	private Graph graph = AdjacencyListGraph.graphFromFile("input/cormen_23.1", false);
+	private Graph graph = new AdjacencyListGraph(0);
 	GraphPanel graphPanel = new GraphPanel(graph);
 	JScrollPane scrGraphPanel = new JScrollPane( graphPanel );
 	
@@ -36,7 +37,7 @@ public class Main extends JFrame{
 	TreePanel treePanel = new TreePanel(treeVertices);
 	JScrollPane scrTreePanel = new JScrollPane( treePanel );
 	
-	Thread threadKruskal;
+	Thread threadAlgorithm;
 	
 	private double sizeHeightScrolls = 1.3; 
 		
@@ -71,8 +72,8 @@ public class Main extends JFrame{
 		onResizeWindow();
 	}
 		
-	private void stopKruskal() {
-		if(this.threadKruskal !=  null && this.threadKruskal.isAlive()) {
+	private void stopAlgorithm() {
+		if(this.threadAlgorithm !=  null && this.threadAlgorithm.isAlive()) {
 			this.trigger.finishProcess();
 			
 			//Espera que o processo termine
@@ -83,13 +84,21 @@ public class Main extends JFrame{
 			}
 		}
 	}
-	
+		
 	private void startKruskal() {
 		this.trigger = createTrigger( "kruskal" );
 		
 		//Uma thread depois de finalizada nao pode ser novamente iniciada, logo é necessario criar outra
-		this.threadKruskal = createThread( "kruskal", this.trigger );
-		this.threadKruskal.start();
+		this.threadAlgorithm = createThread( "kruskal", this.trigger );
+		this.threadAlgorithm.start();
+	}
+	
+	private void startPrim() {
+		this.trigger = createTrigger( "prim" );
+		
+		//Uma thread depois de finalizada nao pode ser novamente iniciada, logo é necessario criar outra
+		this.threadAlgorithm = createThread( "prim", this.trigger );
+		this.threadAlgorithm.start();
 	}
 	
 	private Thread createThread(String algorithm, Triggers trigger) {
@@ -98,8 +107,8 @@ public class Main extends JFrame{
 			public void run() {
 				if(algorithm.equals("kruskal"))
 					Kruskal.exec(graph, trigger);
-				else if(algorithm.equals("kruskal"))
-					return;
+				else if(algorithm.equals("prim"))
+					Prim.exec(graph, graph.vertexAt(0), trigger);
 			}
 		};
 	}
@@ -118,12 +127,23 @@ public class Main extends JFrame{
 			
 			@Override
 			public void onRunKruskal() {
-				startKruskal();
+				if(graph != null)
+					startKruskal();
+				else
+					JOptionPane.showMessageDialog(null, "Por favor selecione um grafo clicando na opção \"Carregar Grafo\"");
 			}
 			
 			@Override
 			public void onStopKruskal() {
-				stopKruskal();
+				stopAlgorithm();
+			}
+			
+			@Override
+			public void onRunPrim() {
+				if(graph != null)
+					startPrim();
+				else
+					JOptionPane.showMessageDialog(null, "Por favor selecione um grafo clicando na opção \"Carregar Grafo\"");
 			}
 		};
 	}
@@ -153,8 +173,19 @@ public class Main extends JFrame{
 		//Se for Kruskal
 		if(trigger.getName().equals("kruskal"))
 			kruskalTriggers(name, obj);
-		else if(trigger.equals("prim"))
-			return;		
+		else if(trigger.getName().equals("prim"))
+			primTriggers(name, obj);
+	}
+	
+	public void primTriggers(String name, Object... obj) {
+		
+		if(name.equals("vertice processada")) {
+			graphPanel.highlightVertex( (Vertex) obj[0] );
+		}
+		
+		System.out.println("executando prim: " + name);
+		graphPanel.repaint();
+		graphPanel.revalidate();
 	}
 	
 	public void kruskalTriggers(String name, Object... obj) {		
@@ -183,6 +214,8 @@ public class Main extends JFrame{
 			repaint();
 			JOptionPane.showMessageDialog(null, "O processo foi finalizado");
 			
+		} else if(name.equals("restart process")) {
+			JOptionPane.showMessageDialog(null, "O algoritmo finalizou, e a árvore geradora mínima foi encontrada");
 		}
 
 		updateSizeComponents();
