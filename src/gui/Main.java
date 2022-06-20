@@ -6,6 +6,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
@@ -104,9 +105,14 @@ public class Main extends JFrame{
 				disjointSetPanel.setCd( (ConjuntoDisjunto<Vertex>) obj );
 			}
 			
-		} else if(name.equals("encontrou uma ligacao")) {
+		} else if(name.equals("nao ligados")) {
 			disjointSetPanel.getRow().setEdgeProcess( (Edge) obj );
 			graphPanel.highlightLine( (Edge) obj );
+		
+		} else if(name.equals("ja haviam ligados")) {
+			disjointSetPanel.getRow().setEdgeProcess( (Edge) obj );
+			graphPanel.highlightLine( (Edge) obj );
+			JOptionPane.showMessageDialog(null, "Vale relembrar que os vértices da aresta\nprocessada já estãono mesmo conjunto.\nE por consequência a aresta não será ressaltada.");
 		}
 
 		updateSizeComponents();

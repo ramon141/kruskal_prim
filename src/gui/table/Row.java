@@ -66,21 +66,11 @@ public class Row extends JPanel{
 	}
 	
 	public void drawColumns() {
-//		List<Conjunto<Vertex>> list = cd.getCollection();
-//		int size = list.size();
-		
-		System.out.println(cd.getCollection());
-		
 		int i = 0;
 		for(Conjunto<Vertex> ele: cd.getCollection()) {
 			add(configureColumn(columns[i], ele.toString()));
 			i++;
 		}
-//		for(int i = 0; i < list.size(); i++) {
-//			Conjunto<Vertex> ele = list.get(i);
-//			
-//			add(configureColumn(columns[i], ele.toString()));
-//		}	
 	}
 	
 }

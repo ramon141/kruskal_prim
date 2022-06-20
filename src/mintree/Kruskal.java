@@ -3,6 +3,7 @@ package mintree;
 import utils.Triggers;
 import utils.set.ConjuntoDisjunto;
 import utils.tree.Tree;
+import utils.Queue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,17 +42,17 @@ public class Kruskal {
 //		trigger.onChange(cd, "conjunto disjunto feito");
 		
 		//sort the edges of G.E into nondecreasing order by weight w
-		Tree<Edge> edges = new Tree<>(graph.edges());
-
-		for (Edge edge: edges.toList()) { //for each edge(u, v) ∈ G.E
+		Queue<Edge> edges = new Queue<>(graph.edges());
+		
+		for (Edge edge: edges) { //for each edge(u, v) ∈ G.E
 			
 			//FIND-SET(u) != FIND-SET(v)
 			if(! cd.findSet(edge.u()).getRepresentative().equals(cd.findSet(edge.v()).getRepresentative())) {
 				A.add(edge); //A = A U {(u,v)}
 				cd.union(edge.u(), edge.v()); //UNION(u,v)
-				trigger.onChange(edge, "encontrou uma ligacao");
+				trigger.onChange(edge, "nao ligados");
 			
-			} else trigger.onChange(edge, "nao encontrou uma ligacao");
+			} else trigger.onChange(edge, "ja haviam ligados");
 		}
 		
 		trigger.onChange(A, "terminou");

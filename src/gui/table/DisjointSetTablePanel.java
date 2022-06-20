@@ -22,8 +22,6 @@ public class DisjointSetTablePanel extends JPanel {
 		header = new Header(cd.size() + 1);
 		row = new Row(cd);
 		
-		System.out.println();
-		
 		setLayout(new GridLayout(2, 1));
 		
 		add(header);
