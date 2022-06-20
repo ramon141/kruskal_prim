@@ -13,6 +13,18 @@ necessárias.
 + + Pode ser obtido no link: https://www.oracle.com/java/technologies/downloads/
 + + Obs: Se você usa a melhor distribuição linux existente (Linux Mint) ele já vem instalado por padrão.
 
+## Etapa atual
+Interface para o algoritmo de kruskal implementado, abaixo algumas imagens:
+![](https://i.imgur.com/rvkgC1G.png)
+Rótulo: Detectou que dois vértices estão no mesmo conjunto.
+
+
+![](https://i.imgur.com/aNocisE.png)
+Rótulo: Finalizou todos os passos do algoritmo de Kruskal
+
++ Ainda falta fazer funcionar a interface para o algoritmo de Prim.
++ Falta adicionar um label onde "calcula" a complexidade até o momento.
++ Falta uma parte onde fica o código, e informa que aquele trecho X está executando.
 
 ## Abrir o projeto
 Siga os passos:
