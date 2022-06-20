@@ -30,9 +30,9 @@ public class Main extends JFrame{
 	DisjointSetTablePanel disjointSetPanel;
 	JScrollPane scrDisjointSetPanel;
 	
-	Controls controls = new Controls();
+	Controls controls;
 	
-	Graph graph = AdjacencyListGraph.graphFromFile("input/cormen_23.1", false);
+	private Graph graph = AdjacencyListGraph.graphFromFile("input/cormen_23.1", false);
 	GraphPanel graphPanel = new GraphPanel(graph);
 	JScrollPane scrGraphPanel = new JScrollPane( graphPanel );
 	
@@ -51,7 +51,14 @@ public class Main extends JFrame{
 				trigger.setGo(false);
 			}
 		};
-				
+		
+		controls = new Controls() {
+			@Override
+			public void onLoadGraph(Graph newGraph) {
+				setGraph(newGraph);
+			}
+		};
+			
 		Thread threadKruskal = new Thread() {
 			@Override
 			public void run() {
@@ -83,6 +90,17 @@ public class Main extends JFrame{
 		onResizeWindow();
 	}
 	
+	
+	
+	public Graph getGraph() {
+		return graph;
+	}
+
+	public void setGraph(Graph graph) {
+		this.graph = graph;
+		this.graphPanel.setGraph(graph);
+	}
+
 	//Um trigger com uma mensagem específica é enviada a cada etapa do algoritmo (seja de Kruskal ou Prim)
 	//Para definir as etapas que o trigger deve ser chamado é necessário adicionar no Kruskal.exec ou Prim.exec
 	public void callback(Object obj,  String name) {
@@ -110,8 +128,6 @@ public class Main extends JFrame{
 			graphPanel.highlightLine( (Edge) obj );
 		
 		} else if(name.equals("ja haviam ligados")) {
-			disjointSetPanel.getRow().setEdgeProcess( (Edge) obj );
-			graphPanel.highlightLine( (Edge) obj );
 			JOptionPane.showMessageDialog(null, "Vale relembrar que os vértices da aresta\nprocessada já estãono mesmo conjunto.\nE por consequência a aresta não será ressaltada.");
 		}
 

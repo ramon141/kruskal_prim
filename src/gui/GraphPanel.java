@@ -4,11 +4,13 @@ import graph.Edge;
 import graph.Graph;
 import graph.Vertex;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +18,13 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+
 @SuppressWarnings("serial")
 public class GraphPanel extends JPanel{
 
 	Graphics g;
+	
+	private List<Edge> edgeProcessed = new ArrayList<>();
 	private Map<Vertex, Point> onDrawVertices = new HashMap<>();
 	private final int INITIAL_COLUMN = 3;
 	private final int WIDTH_VERTICES = 50;
@@ -37,14 +42,16 @@ public class GraphPanel extends JPanel{
 
 	public void setGraph(Graph graph) {
 		this.graph = graph;
-		repaint();
 		setPreferredSize(  new Dimension( ( graph.numberOfVertices() ) * (WIDTH_VERTICES + PADDING_VERTICES), graph.numberOfVertices() * (WIDTH_VERTICES + PADDING_VERTICES))  );
+		
+		revalidate();
 	}
 	
 	//Retorna um booleano para indicar se o vértice foi adicionado na panel, retornando true para este caso.
 	//Retornando false caso o vértice já se encontrava na telas
 	private boolean drawVertex(Graphics g, Vertex v, List<Vertex> verticesProcessed, int x, int y) {
 		if(!verticesProcessed.contains(v)) {
+				
 			g.setColor( new Color(228,131,18) );
 			g.fillOval(x * (WIDTH_VERTICES + PADDING_VERTICES), y * (WIDTH_VERTICES + PADDING_VERTICES), WIDTH_VERTICES, WIDTH_VERTICES);
 			
@@ -96,34 +103,48 @@ public class GraphPanel extends JPanel{
 		return onDrawVertices;		
 	}
 	
-	private void drawEdges(Graphics g, Map<Vertex, Point> onDrawVertices, Iterable<Edge> edges, Color lineColor) {
+	private void drawWeight(Graphics g, int startX, int startY, int finishX, int finishY, Edge edge) {
+		g.setFont(new Font("TimesRoman", Font.BOLD, 13));
+		//Desce metade da aresta
+		int x = (startX + finishX) / 2;
+		int y = (startY + finishY) / 2;
 		
+		g.drawString(edge.weight() + "", x, y);
+	}
+	
+	private void drawEdges(Graphics g, Map<Vertex, Point> onDrawVertices, Iterable<Edge> edges, Color lineColor) {
+		 
 		g.setColor(lineColor);
 		
 		for(Edge edge: edges) {
 			Point pointStart  = onDrawVertices.get(edge.u());
 			Point pointFinish = onDrawVertices.get(edge.v());
 			
-			g.drawLine(pointStart.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
-					pointStart.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
-					
-					pointFinish.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
-					pointFinish.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2));
+			int startX = pointStart.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2);
+			int startY = pointStart.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2);
+			
+			int finishX = pointFinish.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2);
+			int finishY = pointFinish.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2);
+			
+			if(edgeProcessed.contains(edge)) {
+				((Graphics2D) g).setStroke( new BasicStroke(5) );
+				g.setColor( Color.RED);
+			
+			} else {
+				((Graphics2D) g).setStroke( new BasicStroke(1) );
+				g.setColor(lineColor);
+			}
+			
+			g.drawLine(startX, startY, finishX, finishY);
+			
+			drawWeight(g, startX, startY, finishX, finishY, edge);
 		}
 		
 	}
 	
 	public void highlightLine(Edge edge) {
-		g.setColor(Color.RED);
-		
-		Point pointStart  = onDrawVertices.get(edge.u());
-		Point pointFinish = onDrawVertices.get(edge.v());
-		
-		g.drawLine(pointStart.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
-					pointStart.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
-					
-					pointFinish.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2),
-					pointFinish.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2));
+		edgeProcessed.add(edge);
+		repaint();
 	}
 	
 	
