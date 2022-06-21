@@ -50,10 +50,12 @@ public class Header extends JPanel{
 	}
 
 	public void resizeColumns(int width, int height) {
-		this.width = width;
-		this.height = height;
-		
-		infoHeader[0].setBounds(3, 0, width / columns - 1, height);
-		infoHeader[1].setBounds(width / columns + 3, 0, (columns - 1) * (width / columns) - 1, height);
+		if(columns != 0) {
+			this.width = width;
+			this.height = height;
+			
+			infoHeader[0].setBounds(3, 0, width / columns - 1, height);
+			infoHeader[1].setBounds(width / columns + 3, 0, (columns - 1) * (width / columns) - 1, height);
+		}
 	}
 }

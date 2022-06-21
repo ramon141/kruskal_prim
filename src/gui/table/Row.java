@@ -13,13 +13,13 @@ import utils.set.Conjunto;
 import utils.set.ConjuntoDisjunto;
 
 @SuppressWarnings("serial")
-public class Row extends JPanel{
+public class Row<T extends List> extends JPanel{
 
 	private Edge edgeProcess;
 	private JLabel[] columns;
-	private ConjuntoDisjunto<Vertex> cd;
+	private T cd;
 	
-	public Row(ConjuntoDisjunto<Vertex> cd) {
+	public Row(T cd) {
 		setCd(cd);
 	}
 		
@@ -33,11 +33,11 @@ public class Row extends JPanel{
 		updateColumns();
 	}
 	
-	public ConjuntoDisjunto<Vertex> getCd() {
+	public T getCd() {
 		return cd;
 	}
 
-	public void setCd(ConjuntoDisjunto<Vertex> cd) {
+	public void setCd(T cd) {
 		this.cd = cd;
 		updateColumns();
 	}
@@ -67,7 +67,7 @@ public class Row extends JPanel{
 	
 	public void drawColumns() {
 		int i = 0;
-		for(Conjunto<Vertex> ele: cd.getCollection()) {
+		for(Object ele: cd) {
 			add(configureColumn(columns[i], ele.toString() ));
 			i++;
 		}

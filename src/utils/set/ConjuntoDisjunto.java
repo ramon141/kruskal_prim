@@ -2,26 +2,23 @@ package utils.set;
 
 import java.util.ArrayList;
 
-public class ConjuntoDisjunto<T> {
-	
-	//Coleção de conjuntos
-	private ArrayList<Conjunto<T>> collection = new ArrayList<>();
-		
+public class ConjuntoDisjunto<T> extends ArrayList<Conjunto<T>>{
+			
 	//Cria um conjunto neste conjunto disjunto
 	public void makeSet(T value) {
 		//Cria o conjunto
 		Conjunto<T> conjunto = new Conjunto<>();
 		conjunto.add(value);
 		
-		collection.add(conjunto);
+		add(conjunto);
 	}
 	
 	//Retorna o conjunto onde se encontra o parâmetro dado
 	public Conjunto<T> findSet(T value) {
 		
 		//Percorre a coleção de conjunto para encontrar onde o valor se encontra
-		for(int i = 0; i < collection.size(); i++) {
-			Conjunto<T> set = collection.get(i);
+		for(int i = 0; i < size(); i++) {
+			Conjunto<T> set = get(i);
 			
 			if(set.contains(value)) //Pesquisa em árvore binária, complexidade O(log n)
 				return set;
@@ -42,24 +39,14 @@ public class ConjuntoDisjunto<T> {
 		}
 		
 		//Remove o y da coleção
-		collection.remove(y);
+		remove(y);
 	}
 	
-	public ArrayList<Conjunto<T>> getCollection() {
-		return collection;
-	}
 	
-	public void setCollection(ArrayList<Conjunto<T>> collection) {
-		this.collection = collection;
-	}
-	
-	public int size() {
-		return this.getCollection().size();
-	}
 
 	@Override
 	public String toString() {		
-		return collection.toString();
+		return super.toString();
 	}
 	
 	

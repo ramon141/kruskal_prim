@@ -29,9 +29,9 @@ public class Prim {
 		
 		((AttrVertex) vertexInit.getData()).key = 0;
 		
-		trigger.onChange("iniciando", graph);
-		
 		Queue<Vertex> Q = new Queue<Vertex>(graph.vertices());
+		
+		trigger.onChange("fila carregada", Q);
 
 		while(!Q.isEmpty()) {
 			Vertex u = Q.extractMin();
@@ -47,7 +47,7 @@ public class Prim {
 				}
 			}
 			
-			trigger.onChange("vertice processada", u);
+			trigger.onChange("vertice processada", u, Q);
 		}
 		
 		//Este trecho nao faz de fato parte do algoritmo, ele serve para manter um formato padrão

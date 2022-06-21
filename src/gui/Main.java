@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -11,10 +13,11 @@ import javax.swing.JViewport;
 import graph.AdjacencyListGraph;
 import graph.Graph;
 import graph.Vertex;
-import graph.Edge;
 import gui.table.DisjointSetTablePanel;
+import graph.Edge;
 import mintree.Kruskal;
 import mintree.Prim;
+import utils.Queue;
 import utils.Triggers;
 import utils.set.ConjuntoDisjunto;
 import utils.tree.Tree;
@@ -23,7 +26,10 @@ import utils.tree.Tree;
 public class Main extends JFrame{
 	Triggers trigger;
 	
-	DisjointSetTablePanel disjointSetPanel;
+	DisjointSetTablePanel<Queue<Vertex>> queuePanel;
+	JScrollPane scrQueuePanel;
+	
+	DisjointSetTablePanel<ConjuntoDisjunto<Vertex>> disjointSetPanel;
 	JScrollPane scrDisjointSetPanel;
 	
 	Controls controls;
@@ -183,13 +189,17 @@ public class Main extends JFrame{
 	}
 	
 	public void primTriggers(String name, Object... obj) {
-		
-		if(name.equals("vertice processada")) {
+		if(name.equals("fila carregada")) {			
+			if(queuePanel == null) {
+				queuePanel = new DisjointSetTablePanel<>( (Queue<Vertex>) obj[0] );
+				scrQueuePanel = new JScrollPane(queuePanel);
+				add(scrQueuePanel);
+			}
+			
+		} else if(name.equals("vertice processada")) {
 			graphPanel.highlightVertex( (Vertex) obj[0] );
+			queuePanel.setCd( (Queue<Vertex>) obj[1] );
 		}
-		
-		if(graphPanel.getParent() != null)
-			System.out.println("diferente de nulo");
 
 		repaint();
 		graphPanel.repaint();
@@ -261,6 +271,11 @@ public class Main extends JFrame{
 		
 		if(scrDisjointSetPanel != null)
 			scrDisjointSetPanel.setBounds(0, (int) (height / sizeHeightScrolls),  (width - (width - ((int)(width / 1.3)))) , (int) ( height -  height / sizeHeightScrolls) - 30);
+		
+		if(scrQueuePanel != null) {
+			scrQueuePanel.setBounds(0, (int) (height / sizeHeightScrolls),  (width - (width - ((int)(width / 1.3)))) , (int) ( height -  height / sizeHeightScrolls) - 30);
+			System.out.println("chamou");
+		}
 		
 		revalidate();
 	}

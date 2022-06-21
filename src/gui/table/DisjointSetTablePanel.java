@@ -1,23 +1,24 @@
 package gui.table;
 
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
 import graph.Vertex;
-import utils.set.ConjuntoDisjunto;
 
 @SuppressWarnings("serial")
-public class DisjointSetTablePanel extends JPanel {
+public class DisjointSetTablePanel<T extends List> extends JPanel {
 
 	private int width = 0;
 	private int height = 0;
-	private ConjuntoDisjunto<Vertex> cd;
+	private T cd;
 	
 	private Header header;
 	private Row row;
 	
-	public DisjointSetTablePanel(ConjuntoDisjunto<Vertex> cd) {
+	public DisjointSetTablePanel(T cd) {
 		this.cd = cd;
 		header = new Header(cd.size() + 1);
 		row = new Row(cd);
@@ -36,11 +37,11 @@ public class DisjointSetTablePanel extends JPanel {
 		this.row = row;
 	}
 
-	public ConjuntoDisjunto<Vertex> getCd() {
+	public T getCd() {
 		return cd;
 	}
 	
-	public void setCd(ConjuntoDisjunto<Vertex> cd) {
+	public void setCd(T cd) {
 		this.cd = cd;
 		header.setColumns(cd.size());
 		row.setCd(cd);
