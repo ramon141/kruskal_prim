@@ -48,7 +48,7 @@ public class Controls extends JPanel{
 	            	Graph graph = AdjacencyListGraph.graphFromFile(chooser.getSelectedFile().getPath(), false);
 	            	
 	            	if(graph.isDirected())
-	            		JOptionPane.showMessageDialog(null, "O grafo selecionado deve ser dirigido");
+	            		JOptionPane.showMessageDialog(null, "O grafo selecionado não deve ser dirigido");
 	            	else if(!graph.isGraphConnected())
 	            		JOptionPane.showMessageDialog(null, "O grafo selecionado deve ser conexo");
 	            	else if(!graph.isWeighted())
@@ -85,10 +85,12 @@ public class Controls extends JPanel{
 	        public void actionPerformed(ActionEvent e) {
 	        	if(runPrim.getText().equals("Executar Prim")) {
 	        		nextStep.setEnabled(true);
+	        		runKruskal.setEnabled(false);
 	        		runPrim.setText("Parar Prim");
 	        	
 	        	} else if (runPrim.getText().equals("Parar Prim")) {
 	        		nextStep.setEnabled(false);
+	        		runKruskal.setEnabled(true);
 	        		runPrim.setText("Executar Prim");
 				}
 	        	
@@ -101,14 +103,17 @@ public class Controls extends JPanel{
 		runKruskal.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
-	        	if(runKruskal.getText().equals("Executar kruskal")) {
+	        	
+	        	if(runKruskal.getText().equals("Executar Kruskal")) {
 	        		nextStep.setEnabled(true);
+	        		runPrim.setEnabled(false);
 	        		runKruskal.setText("Parar Kruskal");
 		        	onRunKruskal();
 	        	
 	        	} else if (runKruskal.getText().equals("Parar Kruskal")) {
 	        		nextStep.setEnabled(false);
-	        		runKruskal.setText("Executar kruskal");
+	        		runPrim.setEnabled(true);
+	        		runKruskal.setText("Executar Kruskal");
 	        		onStopKruskal();
 	        		
 				}

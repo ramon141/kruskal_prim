@@ -44,7 +44,7 @@ public class GraphPanel extends JPanel{
 
 	public void setGraph(Graph graph) {
 		this.graph = graph;
-		setPreferredSize(  new Dimension( ( graph.numberOfVertices() ) * (WIDTH_VERTICES + PADDING_VERTICES), graph.numberOfVertices() * (WIDTH_VERTICES + PADDING_VERTICES))  );
+		setPreferredSize(  new Dimension( ( graph.numberOfVertices() ) * (WIDTH_VERTICES + PADDING_VERTICES), graph.numberOfVertices() * 3 * (WIDTH_VERTICES + PADDING_VERTICES))  );
 		
 		revalidate();
 	}
@@ -100,6 +100,7 @@ public class GraphPanel extends JPanel{
 					verticesAlreadyShown.add(vAdj);
 					onDrawVertices.put(vAdj, new Point(x, y));
 					draw = true;
+					y++;
 					x++;
 				}
 			}
@@ -156,6 +157,16 @@ public class GraphPanel extends JPanel{
 	
 	public void highlightVertex(Vertex vertex) {
 		verticesProcessed.add(vertex);
+		repaint();
+	}
+	
+	public void reset() {
+		verticesProcessed.clear();
+		edgeProcessed.clear();
+		
+		for(int i = 0; i < graph.numberOfVertices(); i++)
+			graph.vertexAt(i).setData(null);
+		
 		repaint();
 	}
 	

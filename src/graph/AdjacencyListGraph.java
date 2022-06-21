@@ -34,14 +34,14 @@ public class AdjacencyListGraph extends Graph {
 	@Override
 	public Vertex addVertex(Vertex v) {
 		if (numberOfVertices == adj.length)
-			throw new RuntimeException("O grafo est� cheio");
+			throw new RuntimeException("O grafo está cheio");
 		if ( !v.isIndexed() ) 
 			v.setIndex(numberOfVertices);
 		if (adj[v.index()] != null) {
 			if (adj[v.index()].getOwnerVertex() == v)
-				throw new RuntimeException("Este v�rtice j� existe no grafo");
+				throw new RuntimeException("Este vértice já existe no grafo");
 			else
-				throw new RuntimeException("O �ndice deste v�rtice j� est� ocupado por outro v�rtice neste grafo");
+				throw new RuntimeException("O índice deste vértice já está ocupado por outro vértice neste grafo");
 		}
 		adj[v.index()] = new AdjacencyList(v);
 		numberOfVertices++;

@@ -86,6 +86,9 @@ public class Main extends JFrame{
 	}
 		
 	private void startKruskal() {
+		//Reseta as configurações
+		graphPanel.reset();
+		
 		this.trigger = createTrigger( "kruskal" );
 		
 		//Uma thread depois de finalizada nao pode ser novamente iniciada, logo é necessario criar outra
@@ -94,6 +97,8 @@ public class Main extends JFrame{
 	}
 	
 	private void startPrim() {
+		//Reseta as configurações
+		graphPanel.reset();
 		this.trigger = createTrigger( "prim" );
 		
 		//Uma thread depois de finalizada nao pode ser novamente iniciada, logo é necessario criar outra
@@ -183,9 +188,12 @@ public class Main extends JFrame{
 			graphPanel.highlightVertex( (Vertex) obj[0] );
 		}
 		
-		System.out.println("executando prim: " + name);
+		if(graphPanel.getParent() != null)
+			System.out.println("diferente de nulo");
+
+		repaint();
 		graphPanel.repaint();
-		graphPanel.revalidate();
+		updateSizeComponents();
 	}
 	
 	public void kruskalTriggers(String name, Object... obj) {		
@@ -205,7 +213,7 @@ public class Main extends JFrame{
 			graphPanel.highlightLine( (Edge) obj[0] );
 		
 		} else if(name.equals("ja haviam ligados")) {
-//			JOptionPane.showMessageDialog(null, "Vale relembrar que os vértices da aresta\nprocessada já estãono mesmo conjunto.\nE por consequência a aresta não será ressaltada.");
+			JOptionPane.showMessageDialog(null, "Vale relembrar que os vértices da aresta\nprocessada já estãono mesmo conjunto.\nE por consequência a aresta não será ressaltada.");
 		
 		} else if(name.equals("restart process")) {
 			remove(scrDisjointSetPanel);
