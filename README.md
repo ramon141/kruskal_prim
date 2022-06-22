@@ -48,4 +48,31 @@ Siga os passos:
 
 + Passo 6: Agora o projeto já aparece no Eclipse e você poderá modificar
     ![](https://i.imgur.com/4Khivq0.png)
+
+
+## Problemas conhecidos
+Em alguns casos ao tentar abrir o projeto, ocorrerá falhas em todas as linhas, como no exemplo abaixo:
+![](https://i.imgur.com/fUaylnx.png)
+
+Este erro ocorre por uma má configuração do projeto no eclipse, para corrigir este problema é simples, basta seguir os passos abaixo:
++ Passo 1: Clique no triâgulo ao lado do botão de executar:
+![](https://i.imgur.com/HQRnO8K.png)
+
++ Passo 2: Clique na opção "Run Configurations".
+
++ Passo 3: Esta tela irá se abrir. Você deverá clicar na opção "JRE", como mostrado na imagem abaixo.
+![](https://i.imgur.com/XcdO7f4.png)
+
++ Passo 4: Altere o JRE padrão para esta opção selecionada na imagem de baixo:
+![](https://i.imgur.com/XWjif2U.png)
+
++ Passo 5: Clique em "Apply", e em seguida em "Run". Como mostrado abaixo:
+![](https://i.imgur.com/zbJitT5.png)
+
+
+
+
+
+
+
   
