@@ -86,15 +86,20 @@ public class Controls extends JPanel{
 	        	if(runPrim.getText().equals("Executar Prim")) {
 	        		nextStep.setEnabled(true);
 	        		runKruskal.setEnabled(false);
+	        		loadGraph.setEnabled(false);
+	        		
 	        		runPrim.setText("Parar Prim");
+		        	onRunPrim();
 	        	
 	        	} else if (runPrim.getText().equals("Parar Prim")) {
 	        		nextStep.setEnabled(false);
 	        		runKruskal.setEnabled(true);
+	        		loadGraph.setEnabled(true);
+	        		
 	        		runPrim.setText("Executar Prim");
+		        	onStopPrim(runPrim);
 				}
 	        	
-	        	onRunPrim();
 	        }
 	    });
 	}
@@ -107,14 +112,18 @@ public class Controls extends JPanel{
 	        	if(runKruskal.getText().equals("Executar Kruskal")) {
 	        		nextStep.setEnabled(true);
 	        		runPrim.setEnabled(false);
+	        		loadGraph.setEnabled(false);
+	        		
 	        		runKruskal.setText("Parar Kruskal");
 		        	onRunKruskal();
 	        	
 	        	} else if (runKruskal.getText().equals("Parar Kruskal")) {
 	        		nextStep.setEnabled(false);
 	        		runPrim.setEnabled(true);
+	        		loadGraph.setEnabled(true);
+	        		
 	        		runKruskal.setText("Executar Kruskal");
-	        		onStopKruskal();
+	        		onStopKruskal(runKruskal);
 	        		
 				}
 	        	
@@ -128,11 +137,11 @@ public class Controls extends JPanel{
 	
 	public void onRunPrim() {}
 	
-	public void onStopPrim() {}
+	public void onStopPrim(JButton btn) {}
 	
 	public void onRunKruskal() {}
 	
-	public void onStopKruskal() {}
+	public void onStopKruskal(JButton btn) {}
 	
 	public void addButtons() {
 		add(runKruskal);

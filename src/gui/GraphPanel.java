@@ -10,31 +10,90 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 
 @SuppressWarnings("serial")
 public class GraphPanel extends JPanel{
 
+	private final Point pointsVertices[] = {
+			new Point(9, 6),
+			new Point(13, 10),
+			new Point(13, 2),
+			new Point(17, 2),
+			new Point(17, 10),
+			new Point(21, 6),
+			new Point(12, 7),
+			new Point(17, 7),
+			new Point(24, 12),
+			new Point(24, 0),
+			new Point(6, 0),
+			new Point(6, 22),
+			new Point(0, 10),
+			new Point(22, 16),
+	};
+	
 	private List<Vertex> verticesProcessed = new ArrayList<>();
 	private List<Edge> edgeProcessed = new ArrayList<>();
 	
 	private Map<Vertex, Point> onDrawVertices = new HashMap<>();
 	
 	private final String REGEX_TO_SEPARE = ", ";
-	private final int INITIAL_COLUMN = 3;
-	private final int WIDTH_VERTICES = 50;
-	private final int PADDING_VERTICES = 50;
+	
+	public final int WIDTH_VERTICES = 50;
+	public final int PADDING = 50;
+	
+	public int widthVertices = 50;
+	public int padding = 40;
+	
+	JButton upScale = new JButton("+");
+	JButton downScale = new JButton("-");
+	
+	double scale = 0.25;
 		
 	private Graph graph;
 	
 	public GraphPanel(Graph graph) {
+		setLayout(null);
+		
+		upScale.setBounds(0, 0, 50, 25);
+		add(upScale);
+		
+		downScale.setBounds(0, 25, 50, 25);
+		add(downScale);
+		
+		upScale.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				scale += 0.1;
+				updateSize();
+				repaint();
+				revalidate();
+			}
+		} );
+		
+		downScale.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				scale -= 0.1;
+				updateSize();
+				repaint();
+				revalidate();
+			}
+		} );
+		
 		setGraph(graph);
 	}
 		
@@ -44,68 +103,65 @@ public class GraphPanel extends JPanel{
 
 	public void setGraph(Graph graph) {
 		this.graph = graph;
-		setPreferredSize(  new Dimension( ( graph.numberOfVertices() ) * (WIDTH_VERTICES + PADDING_VERTICES), graph.numberOfVertices() * 3 * (WIDTH_VERTICES + PADDING_VERTICES))  );
-		
+		updateSize();
 		revalidate();
 	}
 	
-	//Retorna um booleano para indicar se o vértice foi adicionado na panel, retornando true para este caso.
-	//Retornando false caso o vértice já se encontrava na telas
-	private boolean drawVertex(Graphics g, Vertex v, List<Vertex> verticesAlreadyShown, int x, int y) {
-		if(!verticesAlreadyShown.contains(v)) {
+	public void updateSize() {
+		Point maxPoint = new Point(0xFFFFFFFF, 0xFFFFFFFF);
+		
+		for(int i = 0; i < graph.numberOfVertices(); i++) {
+			Point current = pointsVertices[i];
 			
-			if(verticesProcessed.contains(v)) {
-				g.setColor( Color.black );
-			} else {
-				g.setColor( new Color(228,131,18) );
-			}
+			if(maxPoint.x < current.x)
+				maxPoint.x = current.x - 1;
 			
-			g.fillOval(x * (WIDTH_VERTICES + PADDING_VERTICES), y * (WIDTH_VERTICES + PADDING_VERTICES), WIDTH_VERTICES, WIDTH_VERTICES);
-			
-			g.setColor(Color.WHITE);
-			g.drawString(v.getName(), x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 3), y * (WIDTH_VERTICES + PADDING_VERTICES) + (int)(WIDTH_VERTICES / 1.5));
-						
-			return true;
+			if(maxPoint.y < current.y)
+				maxPoint.y = current.y + 1;	
 		}
 		
-		return false;
+		setPreferredSize(new Dimension(
+										(int) (maxPoint.x * (WIDTH_VERTICES + PADDING) * scale),
+										(int) (maxPoint.y * (WIDTH_VERTICES + PADDING) * scale)
+						));
+	}
+	
+	private void drawVertex(Graphics g, Vertex v, int x, int y) {
+		if(verticesProcessed.contains(v)) {
+			g.setColor( Color.black );
+		} else {
+			g.setColor( new Color(228,131,18) );
+		}
+		
+		g.fillOval(x * (widthVertices + padding), y * (widthVertices + padding), widthVertices, widthVertices);
+		
+		g.setColor(Color.WHITE);
+		g.drawString(v.getName() , x * (widthVertices + padding) + (widthVertices / 3), y * (widthVertices + padding) + (int)(widthVertices / 1.5));
+		
+
+		onDrawVertices.put(v, new Point(x, y));
 	}
 
 	private Map<Vertex, Point> drawVertices(Graphics g, Iterable<Vertex> vertices) {
-		g.setFont(new Font("TimesRoman", Font.PLAIN, 30));
+		g.setFont(new Font("TimesRoman", Font.PLAIN, (int)(widthVertices * 0.9)));
 		
-		List<Vertex> verticesAlreadyShown = new ArrayList<>();
+		Point initialPoint = new Point(0x7FFFFFFF/*2^(4*8)/2-1 limite inteiro*/, 0x7FFFFFFF);
 		
-		for(int i = 0, y = 1; i < graph.numberOfVertices(); i++) {
-			boolean draw = false;
-			Vertex v = graph.vertexAt(i);
+		for(int i = 0; i < graph.numberOfVertices(); i++) {
+			Point current = pointsVertices[i];
 			
-			if(drawVertex(g, v, verticesAlreadyShown, INITIAL_COLUMN, y)) {
-				verticesAlreadyShown.add(v);
-				onDrawVertices.put(v, new Point(INITIAL_COLUMN, y));
-				draw = true;
-				y++;
-			}
+			if(initialPoint.x > current.x)
+				initialPoint.x = current.x - 1;
 			
-			int x = INITIAL_COLUMN;
-			
-			for(Vertex vetCount: graph.adjacentVertices(v))
-				if(!verticesAlreadyShown.contains(vetCount))
-					x--;
-			
-			x = (int)(x / 2.0)  + 2;
-			
-			for(Vertex vAdj: graph.adjacentVertices(v)) {
-				if(drawVertex(g, vAdj, verticesAlreadyShown, x, y)) {
-					verticesAlreadyShown.add(vAdj);
-					onDrawVertices.put(vAdj, new Point(x, y));
-					draw = true;
-					y++;
-					x++;
-				}
-			}
-			
-			if(draw) y++;
+			if(initialPoint.y > current.y)
+				initialPoint.y = current.y - 1;	
+		}
+		
+		int i = 0;
+		for(Vertex vertex: vertices) {
+			Point pointDraw = pointsVertices[i];
+			drawVertex(g, vertex, pointDraw.x - initialPoint.x, pointDraw.y - initialPoint.y);
+			i++;
 		}
 		
 		return onDrawVertices;		
@@ -121,18 +177,18 @@ public class GraphPanel extends JPanel{
 	}
 	
 	private void drawEdges(Graphics g, Map<Vertex, Point> onDrawVertices, Iterable<Edge> edges, Color lineColor) {
-		 
+		g.setFont(new Font("TimesRoman", Font.PLAIN, (int)(widthVertices * 0.8)));
 		g.setColor(lineColor);
 		
 		for(Edge edge: edges) {
 			Point pointStart  = onDrawVertices.get(edge.u());
 			Point pointFinish = onDrawVertices.get(edge.v());
 			
-			int startX = pointStart.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2);
-			int startY = pointStart.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2);
+			int startX = pointStart.x * (widthVertices + padding) + (widthVertices / 2);
+			int startY = pointStart.y * (widthVertices + padding) + (widthVertices / 2);
 			
-			int finishX = pointFinish.x * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2);
-			int finishY = pointFinish.y * (WIDTH_VERTICES + PADDING_VERTICES) + (WIDTH_VERTICES / 2);
+			int finishX = pointFinish.x * (widthVertices + padding) + (widthVertices / 2);
+			int finishY = pointFinish.y * (widthVertices + padding) + (widthVertices / 2);
 			
 			if(edgeProcessed.contains(edge)) {
 				((Graphics2D) g).setStroke( new BasicStroke(5) );
@@ -168,6 +224,7 @@ public class GraphPanel extends JPanel{
 			graph.vertexAt(i).setData(null);
 		
 		repaint();
+		revalidate();
 	}
 	
 	public void drawDataVertices(Graphics g, Map<Vertex, Point> onDrawVertices) {
@@ -177,8 +234,8 @@ public class GraphPanel extends JPanel{
 			if(vertex.getData() != null) {
 				Point point = onDrawVertices.get(vertex);
 				
-				int x = point.x * (WIDTH_VERTICES + PADDING_VERTICES);
-				int y = point.y * (WIDTH_VERTICES + PADDING_VERTICES) - (int)(WIDTH_VERTICES / 2.0);
+				int x = point.x * (widthVertices + padding);
+				int y = point.y * (widthVertices + padding) - (int)(widthVertices / 2.0);
 				
 				String elements[] = vertex.getData().toString().split(REGEX_TO_SEPARE);
 				for(String ele: elements) {
@@ -193,10 +250,16 @@ public class GraphPanel extends JPanel{
 	
 	@Override
 	public void paint(Graphics g) {
-		onDrawVertices.clear();
-		drawVertices(g, graph.vertices());
-		drawEdges(g, onDrawVertices, graph.edges(), Color.BLACK);
-		drawDataVertices(g, onDrawVertices);
+		super.paint(g);
+		if(graph != null && graph.numberOfVertices() > 0) {
+			widthVertices = (int) (WIDTH_VERTICES * scale);
+			padding = (int) (PADDING * scale);
+			
+			onDrawVertices.clear();
+			drawVertices(g, graph.vertices());
+			drawEdges(g, onDrawVertices, graph.edges(), Color.BLACK);
+			drawDataVertices(g, onDrawVertices);
+		}
 	}
 	
 }

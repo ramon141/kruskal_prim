@@ -2,9 +2,12 @@ package gui;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -94,6 +97,7 @@ public class Main extends JFrame{
 	private void startKruskal() {
 		//Reseta as configurações
 		graphPanel.reset();
+		repaint();
 		
 		this.trigger = createTrigger( "kruskal" );
 		
@@ -105,6 +109,8 @@ public class Main extends JFrame{
 	private void startPrim() {
 		//Reseta as configurações
 		graphPanel.reset();
+		repaint();
+		
 		this.trigger = createTrigger( "prim" );
 		
 		//Uma thread depois de finalizada nao pode ser novamente iniciada, logo é necessario criar outra
@@ -145,7 +151,7 @@ public class Main extends JFrame{
 			}
 			
 			@Override
-			public void onStopKruskal() {
+			public void onStopKruskal(JButton btn) {
 				stopAlgorithm();
 			}
 			
@@ -199,6 +205,18 @@ public class Main extends JFrame{
 		} else if(name.equals("vertice processada")) {
 			graphPanel.highlightVertex( (Vertex) obj[0] );
 			queuePanel.setCd( (Queue<Vertex>) obj[1] );
+		
+		} else if(name.equals("restart process") || name.equals("terminou")) {
+			remove(scrQueuePanel);
+			queuePanel = null;
+			scrQueuePanel = null;
+			controls.nextStep.setEnabled(false);
+			controls.runKruskal.setEnabled(true);
+			controls.loadGraph.setEnabled(true);
+			controls.runPrim.setText("Executar Prim");
+			stopAlgorithm();
+			repaint();
+			JOptionPane.showMessageDialog(null, "O processo foi finalizado");
 		}
 
 		repaint();
@@ -225,15 +243,16 @@ public class Main extends JFrame{
 		} else if(name.equals("ja haviam ligados")) {
 			JOptionPane.showMessageDialog(null, "Vale relembrar que os vértices da aresta\nprocessada já estãono mesmo conjunto.\nE por consequência a aresta não será ressaltada.");
 		
-		} else if(name.equals("restart process")) {
+		} else if(name.equals("restart process") || name.equals("terminou")) {
 			remove(scrDisjointSetPanel);
 			disjointSetPanel = null;
 			scrDisjointSetPanel = null;
+			controls.nextStep.setEnabled(false);
+			controls.runPrim.setEnabled(true);
+			controls.loadGraph.setEnabled(true);
+			controls.runKruskal.setText("Executar Kruskal");
 			repaint();
 			JOptionPane.showMessageDialog(null, "O processo foi finalizado");
-			
-		} else if(name.equals("restart process")) {
-			JOptionPane.showMessageDialog(null, "O algoritmo finalizou, e a árvore geradora mínima foi encontrada");
 		}
 
 		updateSizeComponents();
@@ -272,10 +291,8 @@ public class Main extends JFrame{
 		if(scrDisjointSetPanel != null)
 			scrDisjointSetPanel.setBounds(0, (int) (height / sizeHeightScrolls),  (width - (width - ((int)(width / 1.3)))) , (int) ( height -  height / sizeHeightScrolls) - 30);
 		
-		if(scrQueuePanel != null) {
+		if(scrQueuePanel != null) 
 			scrQueuePanel.setBounds(0, (int) (height / sizeHeightScrolls),  (width - (width - ((int)(width / 1.3)))) , (int) ( height -  height / sizeHeightScrolls) - 30);
-			System.out.println("chamou");
-		}
 		
 		revalidate();
 	}

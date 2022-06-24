@@ -49,7 +49,7 @@ public class Prim {
 			
 			trigger.onChange("vertice processada", u, Q);
 		}
-		
+				
 		//Este trecho nao faz de fato parte do algoritmo, ele serve para manter um formato padrão
 		//das funções de árvores geradoras mínimas
 		//Percorrer os vertices e obtem seus pi
@@ -60,6 +60,8 @@ public class Prim {
 					if(edge.v().equals(v))
 						caminhoMinimo.add(edge);
 		}
+		
+		trigger.onChange("terminou", caminhoMinimo);
 		
 		return caminhoMinimo;
 	}
