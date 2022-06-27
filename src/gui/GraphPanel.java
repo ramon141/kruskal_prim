@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 
@@ -30,10 +31,10 @@ public class GraphPanel extends JPanel{
 
 	private final Point pointsVertices[] = {
 			new Point(9, 6),
-			new Point(13, 10),
+			new Point(12, 10),
 			new Point(13, 2),
 			new Point(17, 2),
-			new Point(17, 10),
+			new Point(17, 9),
 			new Point(21, 6),
 			new Point(12, 7),
 			new Point(17, 7),
@@ -58,23 +59,25 @@ public class GraphPanel extends JPanel{
 	public int widthVertices = 50;
 	public int padding = 40;
 	
-	JButton upScale = new JButton("+");
-	JButton downScale = new JButton("-");
+	JButton btnUpScale = new JButton("+");
+	JButton btnDownScale = new JButton("-");
 	
 	double scale = 0.25;
 		
 	private Graph graph;
 	
+	private final int INITIAL_COLUMN = 1;
+	
 	public GraphPanel(Graph graph) {
 		setLayout(null);
 		
-		upScale.setBounds(0, 0, 50, 25);
-		add(upScale);
+		btnUpScale.setBounds(0, 0, 50, 25);
+		add(btnUpScale);
 		
-		downScale.setBounds(0, 25, 50, 25);
-		add(downScale);
+		btnDownScale.setBounds(0, 25, 50, 25);
+		add(btnDownScale);
 		
-		upScale.addActionListener( new ActionListener() {
+		btnUpScale.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				scale += 0.1;
@@ -84,7 +87,7 @@ public class GraphPanel extends JPanel{
 			}
 		} );
 		
-		downScale.addActionListener( new ActionListener() {
+		btnDownScale.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				scale -= 0.1;
@@ -104,13 +107,23 @@ public class GraphPanel extends JPanel{
 	public void setGraph(Graph graph) {
 		this.graph = graph;
 		updateSize();
+		repaint();
 		revalidate();
 	}
 	
 	public void updateSize() {
-		Point maxPoint = new Point(0xFFFFFFFF, 0xFFFFFFFF);
+		Point maxPoint = getMaxPoint(graph.numberOfVertices());
 		
-		for(int i = 0; i < graph.numberOfVertices(); i++) {
+		setPreferredSize(new Dimension(
+										(int) (maxPoint.x * (WIDTH_VERTICES + PADDING) * scale),
+										(int) (maxPoint.y * (WIDTH_VERTICES + PADDING) * scale)
+						));
+	}
+	
+	public Point getMaxPoint(int size) {
+		Point maxPoint = new Point(-0x80000000, -0x80000000);
+		
+		for(int i = 0; i < size && pointsVertices.length > i; i++) {
 			Point current = pointsVertices[i];
 			
 			if(maxPoint.x < current.x)
@@ -120,10 +133,7 @@ public class GraphPanel extends JPanel{
 				maxPoint.y = current.y + 1;	
 		}
 		
-		setPreferredSize(new Dimension(
-										(int) (maxPoint.x * (WIDTH_VERTICES + PADDING) * scale),
-										(int) (maxPoint.y * (WIDTH_VERTICES + PADDING) * scale)
-						));
+		return maxPoint;
 	}
 	
 	private void drawVertex(Graphics g, Vertex v, int x, int y) {
@@ -142,20 +152,29 @@ public class GraphPanel extends JPanel{
 		onDrawVertices.put(v, new Point(x, y));
 	}
 
-	private Map<Vertex, Point> drawVertices(Graphics g, Iterable<Vertex> vertices) {
-		g.setFont(new Font("TimesRoman", Font.PLAIN, (int)(widthVertices * 0.9)));
+	private Point getMinPoint(int size) {
+		if(size > pointsVertices.length)
+			return new Point(0, 0);
 		
 		Point initialPoint = new Point(0x7FFFFFFF/*2^(4*8)/2-1 limite inteiro*/, 0x7FFFFFFF);
 		
-		for(int i = 0; i < graph.numberOfVertices(); i++) {
+		for(int i = 0; i < size; i++) {
 			Point current = pointsVertices[i];
 			
 			if(initialPoint.x > current.x)
-				initialPoint.x = current.x - 1;
+				initialPoint.x = current.x - INITIAL_COLUMN;
 			
 			if(initialPoint.y > current.y)
-				initialPoint.y = current.y - 1;	
+				initialPoint.y = current.y - INITIAL_COLUMN;
 		}
+		
+		return initialPoint;
+	}
+	
+	private Map<Vertex, Point> drawVertices(Graphics g, Iterable<Vertex> vertices) {
+		g.setFont(new Font("TimesRoman", Font.PLAIN, (int)(widthVertices * 0.9)));
+		
+		Point initialPoint = getMinPoint(graph.numberOfVertices());
 		
 		int i = 0;
 		for(Vertex vertex: vertices) {
@@ -168,7 +187,7 @@ public class GraphPanel extends JPanel{
 	}
 	
 	private void drawWeight(Graphics g, int startX, int startY, int finishX, int finishY, Edge edge) {
-		g.setFont(new Font("TimesRoman", Font.BOLD, 13));
+		g.setFont(new Font("TimesRoman", Font.BOLD, (int)(widthVertices * 0.8)));
 		//Desce metade da aresta
 		int x = (startX + finishX) / 2;
 		int y = (startY + finishY) / 2;
@@ -177,7 +196,7 @@ public class GraphPanel extends JPanel{
 	}
 	
 	private void drawEdges(Graphics g, Map<Vertex, Point> onDrawVertices, Iterable<Edge> edges, Color lineColor) {
-		g.setFont(new Font("TimesRoman", Font.PLAIN, (int)(widthVertices * 0.8)));
+		g.setFont(new Font("TimesRoman", Font.PLAIN, (int)(widthVertices * 0.9)));
 		g.setColor(lineColor);
 		
 		for(Edge edge: edges) {
@@ -228,7 +247,7 @@ public class GraphPanel extends JPanel{
 	}
 	
 	public void drawDataVertices(Graphics g, Map<Vertex, Point> onDrawVertices) {
-		g.setFont(new Font("TimesRoman", Font.BOLD, 13));
+		g.setFont(new Font("TimesRoman", Font.BOLD, (int)(widthVertices * 0.9)));
 		
 		for(Vertex vertex: graph.vertices()) {
 			if(vertex.getData() != null) {
@@ -251,6 +270,13 @@ public class GraphPanel extends JPanel{
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
+		
+		if(graph.numberOfVertices() > pointsVertices.length) {
+			JOptionPane.showMessageDialog(null, "Não é possível mapear mais de " + pointsVertices.length + " vértices");
+			return;
+		}
+		
+		
 		if(graph != null && graph.numberOfVertices() > 0) {
 			widthVertices = (int) (WIDTH_VERTICES * scale);
 			padding = (int) (PADDING * scale);

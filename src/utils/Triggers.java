@@ -21,10 +21,6 @@ public class Triggers {
 		this.name = name;
 	}
 	
-	/**
-	 * @param obj Novo valor da estrutura que foi modificada
-	 * @param name Nome da estrutura modificada, será utilizada para identificação
-	 * */
 	public void onChange(String name, Object... obj) {
 		if(name.isEmpty())
 			throw new RuntimeException("A identificação da etapa não pode ser vazia");

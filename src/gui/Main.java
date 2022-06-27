@@ -2,10 +2,6 @@ package gui;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,7 +19,6 @@ import mintree.Prim;
 import utils.Queue;
 import utils.Triggers;
 import utils.set.ConjuntoDisjunto;
-import utils.tree.Tree;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame{
@@ -40,17 +35,12 @@ public class Main extends JFrame{
 	private Graph graph = new AdjacencyListGraph(0);
 	GraphPanel graphPanel = new GraphPanel(graph);
 	JScrollPane scrGraphPanel = new JScrollPane( graphPanel );
-	
-	Tree<Vertex> treeVertices = new Tree<Vertex>(graph.vertices());
-	
-	TreePanel treePanel = new TreePanel(treeVertices);
-	JScrollPane scrTreePanel = new JScrollPane( treePanel );
-	
+		
 	Thread threadAlgorithm;
 	
 	private double sizeHeightScrolls = 1.3; 
 		
-	public Main() {		
+	public Main() {
 		//Configura/Substitui os métodos para servir para os propositos desta classe 
 		configControls();
 				
@@ -67,13 +57,11 @@ public class Main extends JFrame{
 		//memória RAM, porém menos processador, já que não requer que um repaint seja feita a cada scroll
 		//Vale ressaltar que nem sempre um repaint é necessário, logo ele pode gastar o mesmo nível de
 		//processamento que SIMPLE_SCROLL_MODE, e utilizar menos RAM.
-		scrTreePanel.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		scrGraphPanel.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		
 		//Adiciona os componentes no local onde foram previamente configurados
 		//Alguns componentes só sao adicionados em certas ocasiões
 		add(scrGraphPanel);
-		add(scrTreePanel);
 		add(controls);
 		
 		//Implementa um trigger, que fica aguardando a janela mudar de tamanho para alterar o tamanho
@@ -195,7 +183,7 @@ public class Main extends JFrame{
 	}
 	
 	public void primTriggers(String name, Object... obj) {
-		if(name.equals("fila carregada")) {			
+		if(name.equals("fila carregada")) {		
 			if(queuePanel == null) {
 				queuePanel = new DisjointSetTablePanel<>( (Queue<Vertex>) obj[0] );
 				scrQueuePanel = new JScrollPane(queuePanel);
@@ -204,7 +192,7 @@ public class Main extends JFrame{
 			
 		} else if(name.equals("vertice processada")) {
 			graphPanel.highlightVertex( (Vertex) obj[0] );
-			queuePanel.setCd( (Queue<Vertex>) obj[1] );
+			queuePanel.setList( (Queue<Vertex>) obj[1] );
 		
 		} else if(name.equals("restart process") || name.equals("terminou")) {
 			remove(scrQueuePanel);
@@ -224,7 +212,7 @@ public class Main extends JFrame{
 		updateSizeComponents();
 	}
 	
-	public void kruskalTriggers(String name, Object... obj) {		
+	public void kruskalTriggers(String name, Object... obj) {
 		if(name.equals("conjunto disjunto etapa")) {
 			if(scrDisjointSetPanel == null) {
 				//Inicia as estruturas
@@ -233,7 +221,7 @@ public class Main extends JFrame{
 				add(scrDisjointSetPanel);
 			
 			} else {
-				disjointSetPanel.setCd( (ConjuntoDisjunto<Vertex>) obj[0] );
+				disjointSetPanel.setList( (ConjuntoDisjunto<Vertex>) obj[0] );
 			}
 			
 		} else if(name.equals("nao ligados")) {
@@ -241,7 +229,7 @@ public class Main extends JFrame{
 			graphPanel.highlightLine( (Edge) obj[0] );
 		
 		} else if(name.equals("ja haviam ligados")) {
-			JOptionPane.showMessageDialog(null, "Vale relembrar que os vértices da aresta\nprocessada já estãono mesmo conjunto.\nE por consequência a aresta não será ressaltada.");
+			JOptionPane.showMessageDialog(null, "Vale relembrar que os vértices da aresta\nprocessada já estão no mesmo conjunto.\nE por consequência a aresta não será ressaltada.");
 		
 		} else if(name.equals("restart process") || name.equals("terminou")) {
 			remove(scrDisjointSetPanel);
@@ -278,12 +266,9 @@ public class Main extends JFrame{
 	public void updateSizeComponents() {
 		int height = getHeight();
 		int width = getWidth();
-		
-		if(scrTreePanel != null)
-			scrTreePanel.setSize( width / 2 , (int) (height / sizeHeightScrolls));
-		
+				
 		if(scrGraphPanel != null)
-			scrGraphPanel.setBounds(width / 2, 0, width / 2, (int) ( height / sizeHeightScrolls));
+			scrGraphPanel.setBounds(0, 0, width, (int) ( height / sizeHeightScrolls));
 		
 		if(controls != null)
 			controls.setBounds((int)(width / 1.3), (int) (height / sizeHeightScrolls), width - ((int)(width / 1.3)), (int) ( height -  height / sizeHeightScrolls) - 30);
@@ -306,7 +291,11 @@ public class Main extends JFrame{
 	}
 		
 	public static void main(String[] args) {
-		new Main().setVisible(true);
+		try {
+			new Main().setVisible(true);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e);
+		}
 	}
 	
 }

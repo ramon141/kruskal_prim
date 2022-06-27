@@ -17,10 +17,10 @@ public class Row<T extends List> extends JPanel{
 
 	private Edge edgeProcess;
 	private JLabel[] columns;
-	private T cd;
+	private T list;
 	
 	public Row(T cd) {
-		setCd(cd);
+		setList(cd);
 	}
 		
 	public Edge getEdgeProcess() {
@@ -33,19 +33,19 @@ public class Row<T extends List> extends JPanel{
 		updateColumns();
 	}
 	
-	public T getCd() {
-		return cd;
+	public T getList() {
+		return list;
 	}
 
-	public void setCd(T cd) {
-		this.cd = cd;
+	public void setList(T list) {
+		this.list = list;
 		updateColumns();
 	}
 	
 	public void updateColumns() {
 		removeAll();
-		setLayout(new GridLayout(1, cd.size() + 1, 1, 2));
-		columns = new JLabel[cd.size() + 1 /*Aresta processada*/];
+		setLayout(new GridLayout(1, list.size() + 1, 1, 2));
+		columns = new JLabel[list.size() + 1 /*Aresta processada*/];
 		
 		add(configureColumn(columns[0], edgeProcess == null? "Inicial" : edgeProcess.toString()));
 		drawColumns();
@@ -67,7 +67,7 @@ public class Row<T extends List> extends JPanel{
 	
 	public void drawColumns() {
 		int i = 0;
-		for(Object ele: cd) {
+		for(Object ele: list) {
 			add(configureColumn(columns[i], ele.toString() ));
 			i++;
 		}

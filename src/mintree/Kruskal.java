@@ -14,7 +14,31 @@ import graph.Vertex;
 public class Kruskal {
 	
 	public static List<Edge> exec(Graph graph) {
-		return exec(graph, new Triggers("kruskal"));
+		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
+			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
+		
+		ConjuntoDisjunto<Vertex> cd = new ConjuntoDisjunto<>();
+		
+		List<Edge> A = new ArrayList<>();//A = Ø 
+		
+		for(Vertex vertex: graph.vertices()) { //for each vertex v ∈ G.V
+			cd.makeSet(vertex); //MAKE-SET(v)
+		}
+//		trigger.onChange(cd, "conjunto disjunto feito");
+		
+		//sort the edges of G.E into nondecreasing order by weight w
+		Queue<Edge> edges = new Queue<>(graph.edges());
+		
+		for (Edge edge: edges) { //for each edge(u, v) ∈ G.E
+			
+			//FIND-SET(u) != FIND-SET(v)
+			if(! cd.findSet(edge.u()).getRepresentative().equals(cd.findSet(edge.v()).getRepresentative())) {
+				A.add(edge); //A = A U {(u,v)}
+				cd.union(edge.u(), edge.v()); //UNION(u,v)
+			} 
+		}
+		
+		return A;//return A
 	}
 	
 	/**

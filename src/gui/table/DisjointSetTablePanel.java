@@ -13,15 +13,15 @@ public class DisjointSetTablePanel<T extends List> extends JPanel {
 
 	private int width = 0;
 	private int height = 0;
-	private T cd;
+	private T list;
 	
 	private Header header;
 	private Row row;
 	
-	public DisjointSetTablePanel(T cd) {
-		this.cd = cd;
-		header = new Header(cd.size() + 1);
-		row = new Row(cd);
+	public DisjointSetTablePanel(T list) {
+		this.list = list;
+		header = new Header(list.size() + 1);
+		row = new Row(list);
 		
 		setLayout(new GridLayout(2, 1));
 		
@@ -38,13 +38,13 @@ public class DisjointSetTablePanel<T extends List> extends JPanel {
 	}
 
 	public T getCd() {
-		return cd;
+		return list;
 	}
 	
-	public void setCd(T cd) {
-		this.cd = cd;
-		header.setColumns(cd.size());
-		row.setCd(cd);
+	public void setList(T list) {
+		this.list = list;
+		header.setColumns(list.size());
+		row.setList(list);
 	}
 
 	@Override
