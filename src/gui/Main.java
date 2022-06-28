@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.lang.reflect.Array;
+import java.util.stream.StreamSupport;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -90,8 +92,19 @@ public class Main extends JFrame{
 		this.trigger = createTrigger( "kruskal" );
 		
 		//Uma thread depois de finalizada nao pode ser novamente iniciada, logo é necessario criar outra
-		this.threadAlgorithm = createThread( "kruskal", this.trigger );
+		this.threadAlgorithm = createThread( "kruskal", this.trigger, null );
 		this.threadAlgorithm.start();
+	}
+	
+	private Vertex selectAVertex() {
+		Vertex[] vertices = StreamSupport.stream(graph.vertices().spliterator(), false).toArray(Vertex[]::new);
+		
+		int indexOfvertexChosen = JOptionPane.showOptionDialog(graphPanel, "Selecione o vértice inicial", "Title", JOptionPane.YES_NO_CANCEL_OPTION,
+	            JOptionPane.DEFAULT_OPTION, null, vertices, vertices[0]);
+		
+		if(indexOfvertexChosen == -1) return null;
+		
+		return vertices[indexOfvertexChosen];
 	}
 	
 	private void startPrim() {
@@ -99,14 +112,20 @@ public class Main extends JFrame{
 		graphPanel.reset();
 		repaint();
 		
+		Vertex vertexChosen = selectAVertex();
+		if(vertexChosen == null) {
+			JOptionPane.showMessageDialog(null, "Nenhum vértice foi selecionado");
+			return;
+		}
+		
 		this.trigger = createTrigger( "prim" );
 		
 		//Uma thread depois de finalizada nao pode ser novamente iniciada, logo é necessario criar outra
-		this.threadAlgorithm = createThread( "prim", this.trigger );
+		this.threadAlgorithm = createThread( "prim", this.trigger, vertexChosen );
 		this.threadAlgorithm.start();
 	}
 	
-	private Thread createThread(String algorithm, Triggers trigger) {
+	private Thread createThread(String algorithm, Triggers trigger, Vertex vertexInit/*Se prim*/) {
 		return new Thread() {
 			@Override
 			public void run() {

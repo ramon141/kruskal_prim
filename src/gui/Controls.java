@@ -9,7 +9,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import exception.FormatInvalid;
 import graph.AdjacencyListGraph;
 import graph.Graph;
 

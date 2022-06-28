@@ -2,6 +2,7 @@ package utils.set;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("serial")
 public class ConjuntoDisjunto<T> extends ArrayList<Conjunto<T>>{
 			
 	//Cria um conjunto neste conjunto disjunto

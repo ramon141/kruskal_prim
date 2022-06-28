@@ -214,7 +214,7 @@ public class AdjacencyListGraph extends Graph {
 		return g;
 	} 
 	
-	public static AdjacencyListGraph graphFromFile(String fileName, boolean directed) throws FileNotFoundException, IOException, RuntimeException{
+	public static AdjacencyListGraph graphFromFile(String fileName, boolean directed) throws FileNotFoundException, IOException, RuntimeException, Exception{
 		BufferedReader file = new BufferedReader(new FileReader(fileName));
 		String line = file.readLine();
 		int numberOfVertices = Integer.parseInt(line); 

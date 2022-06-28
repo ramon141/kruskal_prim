@@ -8,12 +8,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import graph.Edge;
-import graph.Vertex;
-import utils.set.Conjunto;
-import utils.set.ConjuntoDisjunto;
 
 @SuppressWarnings("serial")
-public class Row<T extends List> extends JPanel{
+public class Row<T extends List<Object>> extends JPanel{
 
 	private Edge edgeProcess;
 	private JLabel[] columns;
