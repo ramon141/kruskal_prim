@@ -1,5 +1,8 @@
 package graph;
 
+import exception.VertexError;
+import exception.WeightInvalid;
+
 public class Edge implements Comparable<Edge> {
 	protected Vertex u;
 	protected Vertex v;
@@ -11,7 +14,7 @@ public class Edge implements Comparable<Edge> {
 	
 	public Edge(Vertex u, Vertex v, double w, boolean directed) {
 		if ( !directed && u == v)
-			throw new RuntimeException("Em uma aresta não direcionada u deve ser diferente de v");
+			throw new VertexError("Em uma aresta não direcionada u deve ser diferente de v");
 		this.u = u;
 		this.v = v;
 		this.weight = w;
@@ -50,7 +53,7 @@ public class Edge implements Comparable<Edge> {
 		if (!isWeighted())
 			throw new RuntimeException("Esta aresta não é ponderada");
 		if (weight == Double.NaN)
-			throw new RuntimeException("Peso inválido!");
+			throw new WeightInvalid("Peso inválido!");
 		this.weight = weight;
 		if (reverse != null)
 			reverse.weight = weight;		

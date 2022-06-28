@@ -1,12 +1,16 @@
 package graph;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import exception.FormatInvalid;
+import exception.VertexError;
 import graph.adjacencylist.AdjacencyList;
 import graph.adjacencylist.AdjacencyListNode;
 
@@ -63,7 +67,7 @@ public class AdjacencyListGraph extends Graph {
 		Vertex u = edge.u;
 		Vertex v = edge.v;
 		if ( !contaisVertex(u) || !contaisVertex(v) )
-			throw new RuntimeException("Algum dos v�rtices da aresta " + edge + " n�o est� no grafo");
+			throw new VertexError("Algum dos vértices da aresta " + edge + " não está no grafo");
 
 		adj[index(u)].addEdge(edge);
 		if (!edge.isDirected()) {
@@ -92,15 +96,15 @@ public class AdjacencyListGraph extends Graph {
 		return false;
 	}
 	
-	private List<Vertex> vertexsProcessed = new ArrayList<>();
+	private List<Vertex> verticesProcessed = new ArrayList<>();
 	private boolean hasWay(Vertex v, Vertex u) {
-		vertexsProcessed.add(v);
+		verticesProcessed.add(v);
 		if(v == u || contaisEdge(u, v)) {return true;}
-		if(vertexsProcessed.size() == this.numberOfVertices()) {return false;}
+		if(verticesProcessed.size() == this.numberOfVertices()) {return false;}
 		
 		//Faz uma busca em profundidade no vértice v, se encontrar o u então há caminho entre eles 
 		for(Vertex vertex: adj[index(v)].adjacentVertices()) {
-			if(!vertexsProcessed.contains(vertex))
+			if(!verticesProcessed.contains(vertex))
 				return hasWay(vertex, u);
 		}
 		
@@ -114,16 +118,16 @@ public class AdjacencyListGraph extends Graph {
 			throw new RuntimeException("Não é possível verficar se o grafo é conexo ou não");
 		
 		//Pode haver "sujeiras" de uma execução anterior
-		vertexsProcessed.clear();
+		verticesProcessed.clear();
 		
 		for(int i = 0; i < this.numberOfVertices(); i++) {
 			for(int j = i + 1; j < this.numberOfVertices(); j++) {
 				
 				//Utiliza a lista processada anteriormente como buffer
-				if(! (vertexsProcessed.contains(this.vertexAt(i)) && vertexsProcessed.contains(this.vertexAt(j)))) { //Se true Logo os vertices se alcançam
+				if(! (verticesProcessed.contains(this.vertexAt(i)) && verticesProcessed.contains(this.vertexAt(j)))) { //Se true Logo os vertices se alcançam
 					
 					//Limpa para proxima iteração
-					vertexsProcessed.clear();
+					verticesProcessed.clear();
 					
 					//Se algum vértice nao alcançar outro vértice, o grafo é automaticamente desconexo
 					if(!hasWay(this.vertexAt(i), this.vertexAt(j)))
@@ -210,33 +214,49 @@ public class AdjacencyListGraph extends Graph {
 		return g;
 	} 
 	
-	public static AdjacencyListGraph graphFromFile(String fileName, boolean directed) {
-		try {
-			BufferedReader file = new BufferedReader(new FileReader(fileName));
-			String line = file.readLine();
-			int numberOfVertices = Integer.parseInt(line); 
-			AdjacencyListGraph graph = new AdjacencyListGraph(numberOfVertices);
-			Vertex vertices[] = new Vertex[numberOfVertices];
-			for( int i=0; i<numberOfVertices; i++) {
-				Vertex v = new Vertex(Character.toString((char)('a'+i)), null); //Vai dar erro
-				graph.addVertex(v);
-				vertices[i] = v;
+	public static AdjacencyListGraph graphFromFile(String fileName, boolean directed) throws FileNotFoundException, IOException, RuntimeException{
+		BufferedReader file = new BufferedReader(new FileReader(fileName));
+		String line = file.readLine();
+		int numberOfVertices = Integer.parseInt(line); 
+		AdjacencyListGraph graph = new AdjacencyListGraph(numberOfVertices);
+		Vertex vertices[] = new Vertex[numberOfVertices];
+		
+		for( int i=0; i < numberOfVertices; i++) {
+			Vertex v = new Vertex(Character.toString((char)('a'+i)), null); //Vai dar erro
+			graph.addVertex(v);
+			vertices[i] = v;
+		}
+		
+		while ( (line = file.readLine()) != null ) {
+			String[] uv = line.split(" ");
+			if(uv.length > 3) {
+				throw new FormatInvalid("O formato do arquivo não atende o padrão1.");
 			}
-			while ( (line = file.readLine()) != null ) {
-				String[] uv = line.split(" ");
+			try {
 				Vertex u = vertices[Integer.parseInt(uv[0])];
 				Vertex v = vertices[Integer.parseInt(uv[1])];
-				if ( uv.length > 2 ) {
-					graph.addEdge( new Edge(u, v, Double.parseDouble(uv[2]), directed) );
-				} else
-					graph.addEdge( new Edge(u, v, directed) );
+				
+				try {
+					if ( uv.length > 2 ) {
+						double weight = Double.parseDouble(uv[2]);
+						graph.addEdge( new Edge(u, v, weight, directed) );
+					} else
+						graph.addEdge( new Edge(u, v, directed) );
+				} catch (RuntimeException e) {
+					throw e;
+				}
+				
+			} catch(IndexOutOfBoundsException e ) {
+				e.printStackTrace();
+				throw new FormatInvalid("O formato do arquivo não atende o padrão2.");
+			
+			} catch(Exception e) {
+				throw e;
 			}
-			file.close();
-			return graph;
-		} catch(Exception e) {
-			e.printStackTrace();
-			return null;
 		}
+		
+		file.close();
+		return graph;
 	}
 
 	//================================================================================

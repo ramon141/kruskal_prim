@@ -13,11 +13,16 @@ public class ConjuntoDisjuntoTest {
 		// - Ponderado: Ok
 		// - Conexo: Ok
 		
-		Graph g = AdjacencyListGraph.graphFromFile("input/cormen_23.1", false);
-		System.out.println(g);
-		
-		System.out.println(Kruskal.exec(g));
-		System.out.println(Prim.exec(g, g.vertexAt(0)));
+		Graph g;
+		try {
+			g = AdjacencyListGraph.graphFromFile("input/cormen_22.2", false);
+			System.out.println(g);
+			
+			System.out.println(Kruskal.exec(g));
+			System.out.println(Prim.exec(g, g.vertexAt(0)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

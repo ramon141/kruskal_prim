@@ -11,7 +11,12 @@ import graph.Vertex;
 
 public class AdjacencyListGraphTest {	
 	public static void main(String[] args) {		
-		Graph g = AdjacencyListGraph.graphFromFile("input/cormen_23.1", false);
+		Graph g = null;
+		try {
+			g = AdjacencyListGraph.graphFromFile("input/cormen_23.1", false);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		//Graph g = AdjacencyListGraph.randomConnectedUndirectedGraph(4, 4);
 		
 		System.out.println("Graph (Fig-23.1 Pag-625)");		

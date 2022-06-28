@@ -264,20 +264,20 @@ public class Main extends JFrame{
 	}
 	
 	public void updateSizeComponents() {
-		int height = getHeight();
-		int width = getWidth();
+		int height = getContentPane().getHeight();
+		int width = getContentPane().getWidth();
 				
 		if(scrGraphPanel != null)
 			scrGraphPanel.setBounds(0, 0, width, (int) ( height / sizeHeightScrolls));
 		
 		if(controls != null)
-			controls.setBounds((int)(width / 1.3), (int) (height / sizeHeightScrolls), width - ((int)(width / 1.3)), (int) ( height -  height / sizeHeightScrolls) - 30);
+			controls.setBounds((int)(width / 1.3), (int) (height / sizeHeightScrolls), width - ((int)(width / 1.3)), (int) ( height -  height / sizeHeightScrolls));
 		
 		if(scrDisjointSetPanel != null)
-			scrDisjointSetPanel.setBounds(0, (int) (height / sizeHeightScrolls),  (width - (width - ((int)(width / 1.3)))) , (int) ( height -  height / sizeHeightScrolls) - 30);
+			scrDisjointSetPanel.setBounds(0, (int) (height / sizeHeightScrolls),  (width - (width - ((int)(width / 1.3)))) , (int) ( height -  height / sizeHeightScrolls));
 		
 		if(scrQueuePanel != null) 
-			scrQueuePanel.setBounds(0, (int) (height / sizeHeightScrolls),  (width - (width - ((int)(width / 1.3)))) , (int) ( height -  height / sizeHeightScrolls) - 30);
+			scrQueuePanel.setBounds(0, (int) (height / sizeHeightScrolls),  (width - (width - ((int)(width / 1.3)))) , (int) ( height -  height / sizeHeightScrolls));
 		
 		revalidate();
 	}

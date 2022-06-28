@@ -9,6 +9,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import exception.FormatInvalid;
 import graph.AdjacencyListGraph;
 import graph.Graph;
 
@@ -44,24 +45,29 @@ public class Controls extends JPanel{
 	        	JFileChooser chooser = new JFileChooser("./");
 	        	
 	        	int returnVal = chooser.showOpenDialog(null);
-	            if(returnVal == JFileChooser.APPROVE_OPTION) {	            	
-	            	Graph graph = AdjacencyListGraph.graphFromFile(chooser.getSelectedFile().getPath(), false);
-	            	
-	            	if(graph.isDirected())
-	            		JOptionPane.showMessageDialog(null, "O grafo selecionado não deve ser dirigido");
-	            	else if(!graph.isGraphConnected())
-	            		JOptionPane.showMessageDialog(null, "O grafo selecionado deve ser conexo");
-	            	else if(!graph.isWeighted())
-	            		JOptionPane.showMessageDialog(null, "O grafo selecionado deve ser ponderado");
-	            	else {
-	            		runKruskal.setEnabled(true);
-	            		runKruskal.setText("Executar Kruskal");
-	            		
-	            		runPrim.setEnabled(true);
-	            		runPrim.setText("Executar Prim");
-	            		
-	            		onLoadGraph(graph);
-	            	}
+	            if(returnVal == JFileChooser.APPROVE_OPTION) {
+	            	try {
+	            		Graph graph = AdjacencyListGraph.graphFromFile(chooser.getSelectedFile().getPath(), false);
+		            	
+		            	if(graph.isDirected())
+		            		JOptionPane.showMessageDialog(null, "O grafo selecionado não deve ser dirigido");
+		            	else if(!graph.isGraphConnected())
+		            		JOptionPane.showMessageDialog(null, "O grafo selecionado deve ser conexo");
+		            	else if(!graph.isWeighted())
+		            		JOptionPane.showMessageDialog(null, "O grafo selecionado deve ser ponderado");
+		            	else {
+		            		runKruskal.setEnabled(true);
+		            		runKruskal.setText("Executar Kruskal");
+		            		
+		            		runPrim.setEnabled(true);
+		            		runPrim.setText("Executar Prim");
+		            		
+		            		onLoadGraph(graph);
+		            	}	
+					
+	            	} catch (Exception e2) {
+						JOptionPane.showMessageDialog(null, e2);
+					}
 	            	
 	            } else {
 	            	JOptionPane.showMessageDialog(null, "Por favor selecione um arquivo.");
