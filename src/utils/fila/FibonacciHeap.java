@@ -1,9 +1,10 @@
 package utils.fila;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class FibonacciHeap<T extends Comparable<T>> {
+public class FibonacciHeap<T extends Comparable<T>> implements Cloneable, Iterable<T> {
 
 	//Um ponteiro para o menor elemento 
 	private Element<T> minElement;
@@ -15,6 +16,23 @@ public class FibonacciHeap<T extends Comparable<T>> {
 	public FibonacciHeap(Iterable<T> iterable) {
 		for(T value : iterable)
 			add(value);
+	}
+	
+	@Override
+	public FibonacciHeap<T> clone(){
+		FibonacciHeap<T> copyThis = new FibonacciHeap<T>();
+		FibonacciHeap<T> copy = new FibonacciHeap<T>();
+
+		while(!this.isEmpty()) {
+			T value = this.extractMin();
+			copyThis.add(value);
+			copy.add(value);
+		}
+		
+		this.minElement = copyThis.minElement;
+		this.size = copyThis.size;
+		
+		return copy;
 	}
 	
 	public Element<T> add(T value){
@@ -188,14 +206,14 @@ public class FibonacciHeap<T extends Comparable<T>> {
 		return found != null;
 	}
 	
-	public Element<T> getElmentByValue(T k) {
+	public Element<T> getElementByValue(T k) {
 		found = null;
 		contains(k, this.minElement);
 		return found;
 	}
 	
 	public void resortElement(T valueElement) {
-		Element<T> entry = getElmentByValue(valueElement);
+		Element<T> entry = getElementByValue(valueElement);
 		
         if (entry.parent != null && entry.compareTo( entry.parent.getValue() ) <= 0)
             cutNode(entry);
@@ -237,29 +255,46 @@ public class FibonacciHeap<T extends Comparable<T>> {
     }
 	
 	
-	
-	private String toString(Element<T> c) {
-		StringBuilder ret = new StringBuilder();
-		
-	    if (c == null) {
-	      return ret.toString();
-	    } else {
-	      Element<T> temp = c;
-	      do {
-	        ret.append( temp.getValue() + ", " );
-	        Element<T> k = temp.child;
-	        ret.append(toString(k));
-	        temp = temp.next;
-	      } while (temp != c);
-	    }
-	    
-	    return ret.toString();
-	  }
-	
-	
 	@Override
 	public String toString() {
-		return "(" + toString(this.minElement) + ")";
+		String d = "";
+		FibonacciHeap<T> fibHeap = this.clone();
+		
+		for(int i = 0; i < size; i++) {
+			d += ( fibHeap.extractMin() + "" );
+		}
+		
+		return d;
+	}
+	
+	public class FibonacciHeapIterator implements Iterable<T>, Iterator<T>{
+		
+		private FibonacciHeap<T> fibonacciHeap;
+		
+		public FibonacciHeapIterator(FibonacciHeap<T> fibonacciHeap) {
+			this.fibonacciHeap = fibonacciHeap.clone();
+		}
+
+		@Override
+		public Iterator<T> iterator() {
+			return this;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.fibonacciHeap.size > 0;
+		}
+
+		@Override
+		public T next() {
+			return this.fibonacciHeap.extractMin();
+		}
+		
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new FibonacciHeapIterator(this);
 	}
 	
 }

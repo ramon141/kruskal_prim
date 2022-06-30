@@ -19,13 +19,14 @@ import mintree.Kruskal;
 import mintree.Prim;
 import utils.Queue;
 import utils.Triggers;
+import utils.fila.FibonacciHeap;
 import utils.set.DisjointSet;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame{
 	Triggers trigger;
 	
-	DisjointSetTablePanel<Queue<Vertex>> queuePanel;
+	DisjointSetTablePanel<FibonacciHeap<Vertex>> queuePanel;
 	JScrollPane scrQueuePanel;
 	
 	DisjointSetTablePanel<DisjointSet> disjointSetPanel;
@@ -203,14 +204,14 @@ public class Main extends JFrame{
 	public void primTriggers(String name, Object... obj) {
 		if(name.equals("fila carregada")) {		
 			if(queuePanel == null) {
-				queuePanel = new DisjointSetTablePanel<>( (Queue<Vertex>) obj[0] );
+				queuePanel = new DisjointSetTablePanel<>( (FibonacciHeap<Vertex>) obj[0] );
 				scrQueuePanel = new JScrollPane(queuePanel);
 				add(scrQueuePanel);
 			}
 			
 		} else if(name.equals("vertice processada")) {
 			graphPanel.highlightVertex( (Vertex) obj[0] );
-			queuePanel.setList( (Queue<Vertex>) obj[1] );
+			queuePanel.setList( (FibonacciHeap<Vertex>) obj[1] );
 		
 		} else if(name.equals("restart process") || name.equals("terminou")) {
 			remove(scrQueuePanel);

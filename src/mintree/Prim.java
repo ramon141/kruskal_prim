@@ -10,6 +10,8 @@ import graph.Vertex;
 import utils.AttrVertex;
 import utils.Triggers;
 import utils.fila.FibonacciHeap;
+import utils.tree.Node;
+import utils.tree.Tree;
 import utils.Queue;
 
 public class Prim {
@@ -18,7 +20,6 @@ public class Prim {
 		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
 			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
 		
-
 		List<Edge> caminhoMinimo = new ArrayList<>();
 		
 		for(Vertex vertex: graph.vertices()) {
@@ -63,7 +64,6 @@ public class Prim {
 		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
 			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
 		
-
 		List<Edge> caminhoMinimo = new ArrayList<>();
 		
 		for(Vertex vertex: graph.vertices()) {
@@ -72,25 +72,24 @@ public class Prim {
 		
 		((AttrVertex) vertexInit.getData()).key = 0;
 		
-		Queue<Vertex> Q = new Queue<Vertex>(graph.vertices());
-		
+		FibonacciHeap<Vertex> Q = new FibonacciHeap<Vertex>(graph.vertices());
 		trigger.onChange("fila carregada", Q);
-
+		
 		while(!Q.isEmpty()) {
 			Vertex u = Q.extractMin();
 			
+			System.out.println(u);
+			
 			for(Edge edge: graph.edgesIncidentFrom(u)) {
 				Vertex v = edge.v();
-				
+
 				if(Q.contains(v) && edge.weight() < ((AttrVertex) v.getData()).key) {
 					((AttrVertex) v.getData()).pi = u;
 					((AttrVertex) v.getData()).key = edge.weight();
-//					trigger.onChange("mudou caminho", u);
-					
+					Q.resortElement(v);
 				}
 			}
-			
-			trigger.onChange("vertice processada", u, Q);
+			trigger.onChange("vertice processada", u, Q);		
 		}
 				
 		//Este trecho nao faz de fato parte do algoritmo, ele serve para manter um formato padrão

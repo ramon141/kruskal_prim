@@ -192,6 +192,38 @@ public class Tree<T extends Comparable<T>> implements Iterable<T>{
 		return contains(this.root, value);
 	}
 	
+	private Node<T> removeNode(Node<T> node) {
+		T value = node.getValue();
+		
+		if(node.getLeft() == null && node.getRight() == null) {
+			node = null;
+			return null;
+		
+		} else if(node.getLeft() != null && node.getRight() != null) {
+			Node<T> aux = node.getLeft();
+			
+			while(aux.getRight() != null)
+				aux = aux.getRight();
+			
+			node.setValue(aux.getValue());
+			aux.setValue(value);
+			node.setLeft(remove(node.getLeft(), value));
+			
+			return node;
+			
+		}else {
+			Node<T> aux;
+			
+			if(node.getLeft() != null)
+				aux = node.getLeft();
+			else
+				aux = node.getRight();
+			
+			node = null;
+			return aux;
+		}
+	}
+	
 	private Node<T> remove(Node<T> node, T value) {		
 		if(node == null) return null;
 		int cmpTo = value.compareTo(node.getValue());
@@ -202,34 +234,7 @@ public class Tree<T extends Comparable<T>> implements Iterable<T>{
 		treeInList.clear();
 		
 		if(cmpTo == 0) {
-			//Se for no folha
-			if(node.getLeft() == null && node.getRight() == null) {
-				node = null;
-				return null;
-			
-			} else if(node.getLeft() != null && node.getRight() != null) {
-				Node<T> aux = node.getLeft();
-				
-				while(aux.getRight() != null)
-					aux = aux.getRight();
-				
-				node.setValue(aux.getValue());
-				aux.setValue(value);
-				node.setLeft(remove(node.getLeft(), value));
-				
-				return node;
-				
-			}else {
-				Node<T> aux;
-				
-				if(node.getLeft() != null)
-					aux = node.getLeft();
-				else
-					aux = node.getRight();
-				
-				node = null;
-				return aux;
-			}
+			return removeNode(node);
 		} else {
 			if(cmpTo > 0) //Remove a direita
 				node.setRight(remove(node.getRight(), value));
@@ -349,6 +354,29 @@ public class Tree<T extends Comparable<T>> implements Iterable<T>{
 
 	public int height() {
 		return height(this.root);
+	}
+	
+	private Node<T> getNodeByValue(Node<T> node, T value) {
+		//Já encontrou oub chegou no fim
+		if(node == null) return null;
+		
+		int cmpTo = value.compareTo(node.getValue());
+		
+		if(cmpTo == 0)
+			return node;
+		else if(cmpTo > 0)
+			return getNodeByValue(node.getRight(), value);
+		else
+			return getNodeByValue(node.getLeft(), value);
+	}
+	
+	public Node<T> getNodeByValue(T value) {
+		return getNodeByValue(this.root, value);
+	}
+	
+	public void resortElement(Node<T> node) {
+		this.root = removeNode(node);
+		add(node.getValue());
 	}
 	
 	private Integer width(Node<T> node, T value, int padding) {
