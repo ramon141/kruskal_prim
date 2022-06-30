@@ -2,6 +2,7 @@ package gui.table;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -9,7 +10,7 @@ import javax.swing.JPanel;
 import graph.Vertex;
 
 @SuppressWarnings("serial")
-public class DisjointSetTablePanel<T extends List> extends JPanel {
+public class DisjointSetTablePanel<T extends Iterable> extends JPanel {
 
 	private int width = 0;
 	private int height = 0;
@@ -19,8 +20,11 @@ public class DisjointSetTablePanel<T extends List> extends JPanel {
 	private Row row;
 	
 	public DisjointSetTablePanel(T list) {
+		
+		int size = getSizeFromIterable(list);
+		
 		this.list = list;
-		header = new Header(list.size() + 1);
+		header = new Header(size + 1);
 		row = new Row(list);
 		
 		setLayout(new GridLayout(2, 1));
@@ -43,8 +47,16 @@ public class DisjointSetTablePanel<T extends List> extends JPanel {
 	
 	public void setList(T list) {
 		this.list = list;
-		header.setColumns(list.size());
+		header.setColumns( getSizeFromIterable(list) );
 		row.setList(list);
+	}
+	
+	public int getSizeFromIterable(Iterable ite) {
+		int i = 0;
+		for(Object obj : ite)
+			i++;
+		
+		return i;
 	}
 
 	@Override

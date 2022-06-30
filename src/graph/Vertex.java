@@ -42,7 +42,7 @@ public class Vertex implements Comparable<Vertex> {
 	
 	public void setIndex(int i) {
 		if (i < 0)
-			throw new RuntimeException("O �ndice deve ser maior ou igual a zero!");
+			throw new RuntimeException("O índice deve ser maior ou igual a zero!");
 		if ( isIndexed() )
 			throw new RuntimeException("Este vértice já está indexado, ele deve ser usado sempre neste �ndice para evitar problemas de indexa��o quando usado em v�rios grafos!");
 		index = i;

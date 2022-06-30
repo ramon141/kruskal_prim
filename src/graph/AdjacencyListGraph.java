@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -16,6 +17,9 @@ import graph.adjacencylist.AdjacencyListNode;
 
 public class AdjacencyListGraph extends Graph {
 	protected AdjacencyList[] adj;
+	
+	private int counterEdges;
+	private ArrayList<Edge> edgesWithList;
 
 	//================================================================================
 	// Essential Methods
@@ -24,7 +28,9 @@ public class AdjacencyListGraph extends Graph {
 	public AdjacencyListGraph(int maxVertices) {
 		numberOfVertices = 0;
 		numberOfEdges = 0;
+		counterEdges = 0;
 		adj = new AdjacencyList[maxVertices];
+		edgesWithList = new ArrayList<>( maxVertices * (maxVertices - 1) / 2 );
 		hasDirectedEdges = false;
 		hasUndirectedEdges = false;
 		hasWeightedEdges = false;
@@ -35,6 +41,10 @@ public class AdjacencyListGraph extends Graph {
 		return v.index();
 	}
 
+	public int maxVertices() {
+		return adj.length;
+	}
+	
 	@Override
 	public Vertex addVertex(Vertex v) {
 		if (numberOfVertices == adj.length)
@@ -85,6 +95,9 @@ public class AdjacencyListGraph extends Graph {
 			hasWeightedEdges = true;
 		else
 			hasUnweightedEdges = true;
+		
+		edgesWithList.add(edge);
+		
 		return edge;
 	}
 
@@ -311,6 +324,9 @@ public class AdjacencyListGraph extends Graph {
 		}
 	}
 
+	
+	
+	
 	public class EdgeIterator implements Iterator<Edge>, Iterable<Edge> {
 		private int index;
 		private AdjacencyListNode node;
@@ -345,7 +361,10 @@ public class AdjacencyListGraph extends Graph {
 
 	}
 
-	
+	@Override
+	public List<Edge> edgesWithList() {
+		return edgesWithList;
+	}
 
 	/*@Override
 	public void exportToDotFile( String fileName ) {

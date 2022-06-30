@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.lang.reflect.Array;
 import java.util.stream.StreamSupport;
 
 import javax.swing.JButton;
@@ -20,7 +19,7 @@ import mintree.Kruskal;
 import mintree.Prim;
 import utils.Queue;
 import utils.Triggers;
-import utils.set.ConjuntoDisjunto;
+import utils.set.DisjointSet;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame{
@@ -29,7 +28,7 @@ public class Main extends JFrame{
 	DisjointSetTablePanel<Queue<Vertex>> queuePanel;
 	JScrollPane scrQueuePanel;
 	
-	DisjointSetTablePanel<ConjuntoDisjunto<Vertex>> disjointSetPanel;
+	DisjointSetTablePanel<DisjointSet> disjointSetPanel;
 	JScrollPane scrDisjointSetPanel;
 	
 	Controls controls;
@@ -235,12 +234,12 @@ public class Main extends JFrame{
 		if(name.equals("conjunto disjunto etapa")) {
 			if(scrDisjointSetPanel == null) {
 				//Inicia as estruturas
-				disjointSetPanel = new DisjointSetTablePanel( (ConjuntoDisjunto<Vertex>) obj[0] );
+				disjointSetPanel = new DisjointSetTablePanel( (DisjointSet) obj[0] );
 				scrDisjointSetPanel = new JScrollPane( disjointSetPanel );
 				add(scrDisjointSetPanel);
 			
 			} else {
-				disjointSetPanel.setList( (ConjuntoDisjunto<Vertex>) obj[0] );
+				disjointSetPanel.setList( (DisjointSet) obj[0] );
 			}
 			
 		} else if(name.equals("nao ligados")) {

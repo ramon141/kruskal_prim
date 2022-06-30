@@ -1,5 +1,7 @@
 package graph;
 
+import java.util.List;
+
 public abstract class Graph {
 	protected int numberOfVertices;
 	protected int numberOfEdges;
@@ -50,14 +52,17 @@ public abstract class Graph {
 	abstract public Edge addEdge(Edge edge);
 	abstract public boolean contaisEdge(Vertex u, Vertex v);
 	abstract public boolean isGraphConnected();
+	abstract public int maxVertices();
 			
 	//================================================================================
     // Iterable Abstract Methods
     //================================================================================
 	abstract public Iterable<Vertex> vertices();
 	abstract public Iterable<Vertex> adjacentVertices(Vertex u);
-	abstract public Iterable<Edge> edges();
-	abstract public Iterable<Edge> edgesIncidentFrom(Vertex u);
+	abstract public Iterable<Edge>   edges();
+	abstract public List<Edge>       edgesWithList();
+	abstract public Iterable<Edge>   edgesIncidentFrom(Vertex u);
+	
 
 	
 }

@@ -2,6 +2,7 @@ package gui.table;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -10,7 +11,7 @@ import javax.swing.JPanel;
 import graph.Edge;
 
 @SuppressWarnings("serial")
-public class Row<T extends List<Object>> extends JPanel{
+public class Row<T extends Iterable> extends JPanel{
 
 	private Edge edgeProcess;
 	private JLabel[] columns;
@@ -41,13 +42,24 @@ public class Row<T extends List<Object>> extends JPanel{
 	
 	public void updateColumns() {
 		removeAll();
-		setLayout(new GridLayout(1, list.size() + 1, 1, 2));
-		columns = new JLabel[list.size() + 1 /*Aresta processada*/];
+		
+		int size = getSizeFromIterable(list);
+		
+		setLayout(new GridLayout(1, size + 1, 1, 2));
+		columns = new JLabel[size + 1 /*Aresta processada*/];
 		
 		add(configureColumn(columns[0], edgeProcess == null? "Inicial" : edgeProcess.toString()));
 		drawColumns();
 		
 		revalidate();
+	}
+	
+	public int getSizeFromIterable(Iterable ite) {
+		int i = 0;
+		for(Object obj : ite)
+			i++;
+		
+		return i;
 	}
 
 	public JLabel configureColumn(JLabel jl, String text) {

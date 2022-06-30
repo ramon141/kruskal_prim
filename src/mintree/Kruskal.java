@@ -1,45 +1,21 @@
 package mintree;
 
 import utils.Triggers;
-import utils.set.ConjuntoDisjunto;
+import utils.set.DisjointSet;
+import utils.tree.Tree;
 import utils.Queue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import graph.Edge;
 import graph.Graph;
 import graph.Vertex;
 
 public class Kruskal {
-	
-	public static List<Edge> exec(Graph graph) {
-		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
-			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
-		
-		ConjuntoDisjunto<Vertex> cd = new ConjuntoDisjunto<>();
-		
-		List<Edge> A = new ArrayList<>();//A = Ø 
-		
-		for(Vertex vertex: graph.vertices()) { //for each vertex v ∈ G.V
-			cd.makeSet(vertex); //MAKE-SET(v)
-		}
-//		trigger.onChange(cd, "conjunto disjunto feito");
-		
-		//sort the edges of G.E into nondecreasing order by weight w
-		Queue<Edge> edges = new Queue<>(graph.edges());
-		
-		for (Edge edge: edges) { //for each edge(u, v) ∈ G.E
-			
-			//FIND-SET(u) != FIND-SET(v)
-			if(! cd.findSet(edge.u()).getRepresentative().equals(cd.findSet(edge.v()).getRepresentative())) {
-				A.add(edge); //A = A U {(u,v)}
-				cd.union(edge.u(), edge.v()); //UNION(u,v)
-			} 
-		}
-		
-		return A;//return A
-	}
 	
 	/**
 	 * @param graph Uma instância de um grafo que já possui vértices e arestas definidas.
@@ -50,36 +26,84 @@ public class Kruskal {
 	 * Ao lado de cada trecho de código estará o seu correspondente do livro de Cormem (Figura 23.4)
 	 * 
      */
-	public static List<Edge> exec(Graph graph, Triggers trigger) {
+	public static List<Edge> exec(Graph graph) {	
 		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
 			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
 		
-		ConjuntoDisjunto<Vertex> cd = new ConjuntoDisjunto<>();
+		List<Edge> result = new ArrayList<>();//A = Ø
 		
-		List<Edge> A = new ArrayList<>();//A = Ø 
-		
+		DisjointSet cd = new DisjointSet(graph.maxVertices());
+
 		for(Vertex vertex: graph.vertices()) { //for each vertex v ∈ G.V
-			cd.makeSet(vertex); //MAKE-SET(v)
-			trigger.onChange("conjunto disjunto etapa", cd);
+			cd.makeSet(vertex.index()); //MAKE-SET(v)
 		}
-//		trigger.onChange(cd, "conjunto disjunto feito");
 		
 		//sort the edges of G.E into nondecreasing order by weight w
-		Queue<Edge> edges = new Queue<>(graph.edges());
+		List<Edge> sortedEdgeList = graph.edgesWithList();
+		sortedEdgeList.sort(null);
+
 		
-		for (Edge edge: edges) { //for each edge(u, v) ∈ G.E
+		for(Edge next_edge: sortedEdgeList){ //for each edge(u, v) ∈ G.E
 			
 			//FIND-SET(u) != FIND-SET(v)
-			if(! cd.findSet(edge.u()).getRepresentative().equals(cd.findSet(edge.v()).getRepresentative())) {
-				A.add(edge); //A = A U {(u,v)}
-				cd.union(edge.u(), edge.v()); //UNION(u,v)
-				trigger.onChange("nao ligados", edge);
-			
-			} else trigger.onChange("ja haviam ligados", edge);
+			if (cd.find(next_edge.u().index()) != cd.find(next_edge.v().index())) {
+				
+				result.add(next_edge);//A = A U {(u,v)}
+				
+				cd.Union(next_edge.u().index(), next_edge.v().index()); //UNION(u,v)
+			}
 		}
 		
-		trigger.onChange("terminou", A);
-		return A;//return A
+		return result;
+	}
+	
+	/**
+	 * @param graph Uma instância de um grafo que já possui vértices e arestas definidas.
+	 * @param trigger Uma instância de Trigger que servirá para ouvir as ações a cada passo.
+	 * 
+	 * @return Uma lista que pode ser convertida no formato de árvore. Nesta está contido
+	 *         as arestas (instâncias de Edge) que formam o caminnho mínimo.
+	 *         
+	 * Ao lado de cada trecho de código estará o seu correspondente do livro de Cormem (Figura 23.4)
+	 * 
+     */
+	public static List<Edge> exec(Graph graph, Triggers trigger) {
+		
+		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
+			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
+		
+		List<Edge> result = new ArrayList<>();//A = Ø
+		
+		int V = graph.numberOfVertices();
+
+		DisjointSet cd = new DisjointSet(graph.maxVertices());
+
+		for(Vertex vertex: graph.vertices()) { //for each vertex v ∈ G.V
+			cd.makeSet(vertex.index()); //MAKE-SET(v)
+			trigger.onChange("conjunto disjunto etapa", cd);
+		}
+		
+		//sort the edges of G.E into nondecreasing order by weight w
+		List<Edge> sortedEdgeList = graph.edgesWithList();
+		sortedEdgeList.sort(null);
+
+		
+		for(Edge next_edge: sortedEdgeList){ //for each edge(u, v) ∈ G.E
+			
+			//FIND-SET(u) != FIND-SET(v)
+			if (cd.find(next_edge.u().index()) != cd.find(next_edge.v().index())) {
+				
+				result.add(next_edge);//A = A U {(u,v)}
+				
+				cd.Union(next_edge.u().index(), next_edge.v().index()); //UNION(u,v)
+				
+				trigger.onChange("nao ligados", next_edge);
+			}
+		}
+		
+		trigger.onChange("terminou", result);
+
+		return result;
 	}
 	
 	
