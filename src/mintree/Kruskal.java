@@ -4,10 +4,7 @@ import utils.Triggers;
 import utils.set.DisjointSet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import graph.Edge;
 import graph.Graph;
@@ -28,7 +25,7 @@ public class Kruskal {
 		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
 			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
 		
-		List<Edge> result = new ArrayList<>();//A = Ø
+		List<Edge> result = new ArrayList<>(graph.maxVertices());//A = Ø
 		
 		DisjointSet cd = new DisjointSet(graph.maxVertices());
 
@@ -73,10 +70,8 @@ public class Kruskal {
 		
 		trigger.onChange("init");
 		
-		List<Edge> result = new ArrayList<>();//A = Ø
+		List<Edge> result = new ArrayList<>(graph.maxVertices());//A = Ø
 		
-		int V = graph.numberOfVertices();
-
 		DisjointSet cd = new DisjointSet(graph.maxVertices());
 
 		for(Vertex vertex: graph.vertices()) { //for each vertex v ∈ G.V

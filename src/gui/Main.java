@@ -20,8 +20,6 @@ import graph.Edge;
 import mintree.Kruskal;
 import mintree.Prim;
 import utils.Triggers;
-import utils.fila.FibonacciHeap;
-import utils.set.DisjointSet;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame{

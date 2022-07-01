@@ -7,12 +7,11 @@ import graph.Edge;
 import graph.Graph;
 import mintree.Kruskal;
 import mintree.Prim;
-import utils.Triggers;
 
 public class AlgorithmsTest {
 
 	public static void main(String[] args) {
-		//Tests realizados:
+		//Testes realizados:
 		// - Não-Dirigido: Ok
 		// - Ponderado: Ok
 		// - Conexo: Ok
