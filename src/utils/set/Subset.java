@@ -5,6 +5,6 @@ public class Subset {
 	
 	@Override
 	public String toString() {
-		return "NS";
+		return "p: " + parent + " - r: " + rank;
 	}
 }

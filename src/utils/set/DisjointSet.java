@@ -1,8 +1,12 @@
 package utils.set;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
+import java.util.TreeSet;
 
-public class DisjointSet implements Iterable<Subset>{
+public class DisjointSet{
 
 	int counter = 0;
 	Subset conjuntos[];
@@ -36,43 +40,13 @@ public class DisjointSet implements Iterable<Subset>{
 		int xroot = find(x);
 		int yroot = find(y);
 
-		if (conjuntos[xroot].rank
-			< conjuntos[yroot].rank)
+		if (conjuntos[xroot].rank < conjuntos[yroot].rank)
 			conjuntos[xroot].parent = yroot;
-		else if (conjuntos[xroot].rank
-				> conjuntos[yroot].rank)
+		else if (conjuntos[xroot].rank > conjuntos[yroot].rank)
 			conjuntos[yroot].parent = xroot;
 		else {
 			conjuntos[yroot].parent = xroot;
 			conjuntos[xroot].rank++;
 		}
 	}
-
-	@Override
-	public Iterator<Subset> iterator() {
-		return new DisjointSetIterable();
-	}	
-	
-	private class DisjointSetIterable implements Iterable<Subset>, Iterator<Subset>{
-
-		private int counterIterable = 0;
-		
-		@Override
-		public boolean hasNext() {
-			return counter > counterIterable;
-		}
-
-		@Override
-		public Subset next() {
-			return conjuntos[counterIterable++];
-		}
-
-		@Override
-		public Iterator<Subset> iterator() {
-			return this;
-		}
-		
-	}
-
-	
 }

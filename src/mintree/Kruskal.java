@@ -2,8 +2,6 @@ package mintree;
 
 import utils.Triggers;
 import utils.set.DisjointSet;
-import utils.tree.Tree;
-import utils.Queue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,6 +69,9 @@ public class Kruskal {
 		
 		if(graph.isDirected() || !graph.isGraphConnected() || !graph.isWeighted())
 			throw new RuntimeException("O grafo informado deve ser não dirigido, ponderado e conexo!");
+
+		
+		trigger.onChange("init");
 		
 		List<Edge> result = new ArrayList<>();//A = Ø
 		
@@ -80,7 +81,6 @@ public class Kruskal {
 
 		for(Vertex vertex: graph.vertices()) { //for each vertex v ∈ G.V
 			cd.makeSet(vertex.index()); //MAKE-SET(v)
-			trigger.onChange("conjunto disjunto etapa", cd);
 		}
 		
 		//sort the edges of G.E into nondecreasing order by weight w

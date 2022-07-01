@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.stream.StreamSupport;
 
 import javax.swing.JButton;
@@ -17,7 +19,6 @@ import gui.table.DisjointSetTablePanel;
 import graph.Edge;
 import mintree.Kruskal;
 import mintree.Prim;
-import utils.Queue;
 import utils.Triggers;
 import utils.fila.FibonacciHeap;
 import utils.set.DisjointSet;
@@ -26,11 +27,8 @@ import utils.set.DisjointSet;
 public class Main extends JFrame{
 	Triggers trigger;
 	
-	DisjointSetTablePanel<FibonacciHeap<Vertex>> queuePanel;
+	DisjointSetTablePanel<PriorityQueue<Vertex>> queuePanel;
 	JScrollPane scrQueuePanel;
-	
-	DisjointSetTablePanel<DisjointSet> disjointSetPanel;
-	JScrollPane scrDisjointSetPanel;
 	
 	Controls controls;
 	
@@ -204,16 +202,25 @@ public class Main extends JFrame{
 	public void primTriggers(String name, Object... obj) {
 		if(name.equals("fila carregada")) {		
 			if(queuePanel == null) {
-				queuePanel = new DisjointSetTablePanel<>( (FibonacciHeap<Vertex>) obj[0] );
+				queuePanel = new DisjointSetTablePanel<>( (PriorityQueue<Vertex>) obj[0] );
 				scrQueuePanel = new JScrollPane(queuePanel);
 				add(scrQueuePanel);
 			}
 			
 		} else if(name.equals("vertice processada")) {
 			graphPanel.highlightVertex( (Vertex) obj[0] );
-			queuePanel.setList( (FibonacciHeap<Vertex>) obj[1] );
+			queuePanel.setList( (PriorityQueue<Vertex>) obj[1] );
 		
 		} else if(name.equals("restart process") || name.equals("terminou")) {
+			if(name.equals("terminou")) {
+				List<Edge> edgeList = ((List<Edge>)obj[0]);
+				
+				for(Edge edge: edgeList)
+					graphPanel.highlightLine(edge);
+			}
+			
+			
+			
 			remove(scrQueuePanel);
 			queuePanel = null;
 			scrQueuePanel = null;
@@ -232,28 +239,13 @@ public class Main extends JFrame{
 	}
 	
 	public void kruskalTriggers(String name, Object... obj) {
-		if(name.equals("conjunto disjunto etapa")) {
-			if(scrDisjointSetPanel == null) {
-				//Inicia as estruturas
-				disjointSetPanel = new DisjointSetTablePanel( (DisjointSet) obj[0] );
-				scrDisjointSetPanel = new JScrollPane( disjointSetPanel );
-				add(scrDisjointSetPanel);
-			
-			} else {
-				disjointSetPanel.setList( (DisjointSet) obj[0] );
-			}
-			
-		} else if(name.equals("nao ligados")) {
-			disjointSetPanel.getRow().setEdgeProcess( (Edge) obj[0] );
+		if(name.equals("nao ligados")) {
 			graphPanel.highlightLine( (Edge) obj[0] );
 		
 		} else if(name.equals("ja haviam ligados")) {
 			JOptionPane.showMessageDialog(null, "Vale relembrar que os vértices da aresta\nprocessada já estão no mesmo conjunto.\nE por consequência a aresta não será ressaltada.");
 		
 		} else if(name.equals("restart process") || name.equals("terminou")) {
-			remove(scrDisjointSetPanel);
-			disjointSetPanel = null;
-			scrDisjointSetPanel = null;
 			controls.nextStep.setEnabled(false);
 			controls.runPrim.setEnabled(true);
 			controls.loadGraph.setEnabled(true);
@@ -291,9 +283,6 @@ public class Main extends JFrame{
 		
 		if(controls != null)
 			controls.setBounds((int)(width / 1.3), (int) (height / sizeHeightScrolls), width - ((int)(width / 1.3)), (int) ( height -  height / sizeHeightScrolls));
-		
-		if(scrDisjointSetPanel != null)
-			scrDisjointSetPanel.setBounds(0, (int) (height / sizeHeightScrolls),  (width - (width - ((int)(width / 1.3)))) , (int) ( height -  height / sizeHeightScrolls));
 		
 		if(scrQueuePanel != null) 
 			scrQueuePanel.setBounds(0, (int) (height / sizeHeightScrolls),  (width - (width - ((int)(width / 1.3)))) , (int) ( height -  height / sizeHeightScrolls));
