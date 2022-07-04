@@ -20,12 +20,13 @@ import graph.Edge;
 import mintree.Kruskal;
 import mintree.Prim;
 import utils.Triggers;
+import utils.fila.FibonacciHeap;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame{
 	Triggers trigger;
 	
-	DisjointSetTablePanel<PriorityQueue<Vertex>> queuePanel;
+	DisjointSetTablePanel<FibonacciHeap<Vertex>> queuePanel;
 	JScrollPane scrQueuePanel;
 	
 	Controls controls;
@@ -200,14 +201,14 @@ public class Main extends JFrame{
 	public void primTriggers(String name, Object... obj) {
 		if(name.equals("fila carregada")) {		
 			if(queuePanel == null) {
-				queuePanel = new DisjointSetTablePanel<>( (PriorityQueue<Vertex>) obj[0] );
+				queuePanel = new DisjointSetTablePanel<>( (FibonacciHeap<Vertex>) obj[0] );
 				scrQueuePanel = new JScrollPane(queuePanel);
 				add(scrQueuePanel);
 			}
 			
 		} else if(name.equals("vertice processada")) {
 			graphPanel.highlightVertex( (Vertex) obj[0] );
-			queuePanel.setList( (PriorityQueue<Vertex>) obj[1] );
+			queuePanel.setList( (FibonacciHeap<Vertex>) obj[1] );
 		
 		} else if(name.equals("restart process") || name.equals("terminou")) {
 			if(name.equals("terminou")) {
