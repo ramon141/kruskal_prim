@@ -129,7 +129,7 @@ public class Main extends JFrame{
 				if(algorithm.equals("kruskal"))
 					Kruskal.exec(graph, trigger);
 				else if(algorithm.equals("prim"))
-					Prim.exec(graph, graph.vertexAt(0), trigger);
+					Prim.exec(graph, vertexInit, trigger);
 			}
 		};
 	}
